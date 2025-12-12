@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Download extends Model
 {
@@ -11,6 +12,17 @@ class Download extends Model
         'description',
         'category',
         'file_path',
-        'file_url',
     ];
+
+    protected $appends = ['file_url'];
+
+    /**
+     * Get the file URL accessor
+     */
+    protected function fileUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->file_path ? asset('storage/' . $this->file_path) : null,
+        );
+    }
 }

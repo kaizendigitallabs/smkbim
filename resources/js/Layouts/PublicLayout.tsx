@@ -11,6 +11,7 @@ interface Props {
 export default function PublicLayout({ children }: Props) {
     const { props } = usePage();
     const schoolProfile = props.schoolProfile as any;
+    const siteSetting = props.siteSetting as any;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
@@ -21,7 +22,9 @@ export default function PublicLayout({ children }: Props) {
                     <div className="flex items-center justify-between h-20">
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-2 group">
-                            {schoolProfile?.logo ? (
+                            {siteSetting?.site_logo ? (
+                                <img src={`/storage/${siteSetting.site_logo}`} alt="Logo" className="h-12 w-12 object-contain" />
+                            ) : schoolProfile?.logo ? (
                                 <img src={`/storage/${schoolProfile.logo}`} alt="Logo" className="h-12 w-12 object-contain" />
                             ) : (
                                 <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -29,7 +32,7 @@ export default function PublicLayout({ children }: Props) {
                                 </div>
                             )}
                             <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                                {schoolProfile?.name || 'SMK BIM'}
+                                {siteSetting?.site_name || schoolProfile?.name || 'SMK BIM'}
                             </span>
                         </Link>
                         
@@ -189,18 +192,18 @@ export default function PublicLayout({ children }: Props) {
 
                             <div>
                                 <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-6">Kontak</h4>
-                                <ul className="space-y-5 text-gray-500 font-medium">
-                                    <li className="flex gap-3 items-center">
-                                        <Phone className="h-5 w-5 text-secondary" />
-                                        <span>{schoolProfile?.phone || '(021) 1234-5678'}</span>
+                                <ul className="space-y-4 text-gray-300">
+                                    <li className="flex gap-3 items-start">
+                                        <Phone className="h-6 w-6 text-secondary shrink-0" />
+                                        <span className="leading-tight">{siteSetting?.footer_contact_phone || schoolProfile?.phone || '+62 xxx xxxx xxxx'}</span>
                                     </li>
-                                    <li className="flex gap-3 items-center">
-                                        <Mail className="h-5 w-5 text-secondary" />
-                                        <span>{schoolProfile?.email || 'admin@smkbim.sch.id'}</span>
+                                    <li className="flex gap-3 items-start">
+                                        <Mail className="h-6 w-6 text-secondary shrink-0" />
+                                        <span className="leading-tight">{siteSetting?.footer_contact_email || schoolProfile?.email || 'info@smkbim.sch.id'}</span>
                                     </li>
                                     <li className="flex gap-3 items-start">
                                         <MapPin className="h-6 w-6 text-secondary shrink-0" />
-                                        <span className="leading-tight max-w-[200px]">{schoolProfile?.address || 'Jl. Raya Pendidikan No. 1'}</span>
+                                        <span className="leading-tight max-w-[200px]">{siteSetting?.footer_contact_address || schoolProfile?.address || 'Jl. Raya Pendidikan No. 1'}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -211,15 +214,15 @@ export default function PublicLayout({ children }: Props) {
                     <div className="bg-slate-50/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-100 dark:border-slate-700 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
                         <span className="text-lg font-bold text-gray-700 dark:text-gray-200">Ikuti Sosial Media Kami :</span>
                         <div className="flex items-center gap-4">
-                            <SocialIcon href={schoolProfile?.facebook} icon={<Facebook className="h-5 w-5" />} className="bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200" />
-                            <SocialIcon href={schoolProfile?.instagram} icon={<Instagram className="h-5 w-5" />} className="bg-pink-600 text-white hover:bg-pink-700 shadow-md shadow-pink-200" />
-                            <SocialIcon href={schoolProfile?.youtube} icon={<Youtube className="h-5 w-5" />} className="bg-red-600 text-white hover:bg-red-700 shadow-md shadow-red-200" />
+                            <SocialIcon href={siteSetting?.footer_social_facebook || schoolProfile?.facebook} icon={<Facebook className="h-5 w-5" />} className="bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200" />
+                            <SocialIcon href={siteSetting?.footer_social_instagram || schoolProfile?.instagram} icon={<Instagram className="h-5 w-5" />} className="bg-pink-600 text-white hover:bg-pink-700 shadow-md shadow-pink-200" />
+                            <SocialIcon href={siteSetting?.footer_social_youtube || schoolProfile?.youtube} icon={<Youtube className="h-5 w-5" />} className="bg-red-600 text-white hover:bg-red-700 shadow-md shadow-red-200" />
                         </div>
                     </div>
                     
                     <div className="mt-12 text-center text-gray-400 dark:text-gray-500 text-sm">
                          <p>
-                            &copy; {new Date().getFullYear()} <span className="text-primary font-bold">{schoolProfile?.name || 'SMK Bina Insan Mulia'}</span>. All rights reserved | Developed by <a href="https://kaizendigilabs.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Kaizen Digital Labs</a>
+                            &copy; {new Date().getFullYear()} <span className="text-primary font-bold">{siteSetting?.site_name || schoolProfile?.name || 'SMK Bina Insan Mulia'}</span>. All rights reserved | Developed by <a href="https://kaizendigilabs.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Kaizen Digital Labs</a>
                         </p>
                     </div>
                 </div>

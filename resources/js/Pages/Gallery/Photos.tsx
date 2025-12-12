@@ -70,7 +70,6 @@ export default function Photos({ galleries }: { galleries: any }) {
                     </div>
                  )}
                 </div>
-                </div>
             </div>
         </PublicLayout>
     );

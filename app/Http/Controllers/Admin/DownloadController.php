@@ -32,9 +32,7 @@ class DownloadController extends Controller
         ]);
 
         if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('downloads', 'public');
-            $validated['file_path'] = $path;
-            $validated['file_url'] = Storage::url($path);
+            $validated['file_path'] = $request->file('file')->store('downloads', 'public');
         }
 
         Download::create($validated);
@@ -65,9 +63,7 @@ class DownloadController extends Controller
                 Storage::disk('public')->delete($download->file_path);
             }
             
-            $path = $request->file('file')->store('downloads', 'public');
-            $validated['file_path'] = $path;
-            $validated['file_url'] = Storage::url($path);
+            $validated['file_path'] = $request->file('file')->store('downloads', 'public');
         }
 
         $download->update($validated);

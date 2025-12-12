@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { PopupBanner } from '@/components/popup-banner';
 import { 
     CheckCircle2, 
     Target, 
@@ -52,6 +53,7 @@ export default function Home({
     return (
         <PublicLayout>
             <Head title="Beranda" />
+            <PopupBanner />
 
             {/* 1. HERO UTAMA - Emerald to White Gradient */}
             <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 py-16 lg:py-24">

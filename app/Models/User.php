@@ -53,4 +53,52 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    /**
+     * Get the class assignments for the user (as wali kelas).
+     */
+    public function classAssignments()
+    {
+        return $this->hasMany(ClassTeacherAssignment::class);
+    }
+
+    /**
+     * Get the subject assignments for the user (as guru mapel).
+     */
+    public function subjectAssignments()
+    {
+        return $this->hasMany(SubjectTeacherAssignment::class);
+    }
+
+    /**
+     * Check if user is assigned as wali kelas.
+     */
+    public function isWaliKelas()
+    {
+        return $this->classAssignments()->exists();
+    }
+
+    /**
+     * Check if user is assigned as guru mapel.
+     */
+    public function isGuruMapel()
+    {
+        return $this->subjectAssignments()->exists();
+    }
+
+    /**
+     * Get assigned classes (as wali kelas).
+     */
+    public function getAssignedClasses()
+    {
+        return SchoolClass::whereIn('id', $this->classAssignments()->pluck('class_id'))->get();
+    }
+
+    /**
+     * Get assigned subjects (as guru mapel).
+     */
+    public function getAssignedSubjects()
+    {
+        return $this->subjectAssignments()->with(['subject', 'schoolClass'])->get();
+    }
 }

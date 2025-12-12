@@ -11,6 +11,23 @@ use Inertia\Inertia;
 class HomeSettingController extends Controller
 {
     /**
+     * Display the home settings page.
+     */
+    public function index()
+    {
+        // Get the single row, or create one if it doesn't exist
+        $setting = HomeSetting::firstOrCreate([]);
+        
+        // Get school programs for features section
+        $schoolPrograms = \App\Models\SchoolProgram::orderBy('order')->get();
+        
+        return Inertia::render('Admin/HomeSettings/Index', [
+            'setting' => $setting,
+            'schoolPrograms' => $schoolPrograms
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit()

@@ -4,7 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch'; // Assuming shadcn switch
+import { Switch } from '@/components/ui/switch';
+import { StarRating } from '@/components/star-rating';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
 import { FormEventHandler } from 'react';

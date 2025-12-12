@@ -41,21 +41,25 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:photo,video',
             'title' => 'required|string|max:255',
-            'url' => 'required|string',
+            'url' => 'nullable|string',
+            'file' => 'nullable|image|max:5120', // For photo uploads, max 5MB
             'thumbnail' => 'nullable|image|max:2048',
             'category' => 'nullable|string|max:255',
             'activity_id' => 'nullable|exists:activities,id',
         ]);
+
+        // Handle photo upload
+        if ($validated['type'] === 'photo' && $request->hasFile('file')) {
+            $validated['url'] = $request->file('file')->store('gallery/photos', 'public');
+        }
 
         // Handle thumbnail upload for videos
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('gallery/thumbnails', 'public');
         }
 
-        // For photos, store the uploaded file
-        if ($validated['type'] === 'photo' && $request->hasFile('url')) {
-            $validated['url'] = $request->file('url')->store('gallery/photos', 'public');
-        }
+        // Remove file field before saving
+        unset($validated['file']);
 
         Gallery::create($validated);
 
@@ -85,23 +89,27 @@ class GalleryController extends Controller
             'type' => 'required|in:photo,video',
             'title' => 'required|string|max:255',
             'url' => 'nullable|string',
+            'file' => 'nullable|image|max:5120', // For photo uploads, max 5MB
             'thumbnail' => 'nullable|image|max:2048',
             'category' => 'nullable|string|max:255',
             'activity_id' => 'nullable|exists:activities,id',
         ]);
+
+        // Handle photo upload
+        if ($validated['type'] === 'photo' && $request->hasFile('file')) {
+            $validated['url'] = $request->file('file')->store('gallery/photos', 'public');
+        } elseif (!$request->hasFile('file') && !isset($validated['url'])) {
+            // Keep existing URL if no new file uploaded and no URL provided
+            unset($validated['url']);
+        }
 
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('gallery/thumbnails', 'public');
         }
 
-        // Handle photo upload
-        if ($validated['type'] === 'photo' && $request->hasFile('url')) {
-            $validated['url'] = $request->file('url')->store('gallery/photos', 'public');
-        } elseif (!$request->hasFile('url')) {
-            // Keep existing URL if no new file uploaded
-            unset($validated['url']);
-        }
+        // Remove file field before saving
+        unset($validated['file']);
 
         $gallery->update($validated);
 

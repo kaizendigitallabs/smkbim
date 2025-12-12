@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { StarRating } from '@/components/star-rating';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
 import { FormEventHandler } from 'react';
@@ -95,18 +96,12 @@ export default function Edit({ testimonial }: { testimonial: Testimonial }) {
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="rating">Rating (1-5)</Label>
-                                    <Input
-                                        id="rating"
-                                        type="number"
-                                        min="1"
-                                        max="5"
-                                        value={data.rating}
-                                        onChange={(e) => setData('rating', parseInt(e.target.value))}
-                                    />
-                                    {errors.rating && <p className="text-red-500 text-sm">{errors.rating}</p>}
-                                </div>
+                                <StarRating
+                                    label="Rating"
+                                    value={data.rating}
+                                    onChange={(rating) => setData('rating', rating)}
+                                    error={errors.rating}
+                                />
                                 
                                 <div className="space-y-2 flex flex-col justify-center">
                                     <Label className="mb-2">Status Aktif</Label>
