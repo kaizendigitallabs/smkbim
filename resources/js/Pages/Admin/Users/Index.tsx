@@ -3,12 +3,14 @@ import { Head, useForm, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { Shield, Plus, Check } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Shield, Plus, Pencil, Trash2, UserPlus } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { DeleteDialog } from '@/components/delete-dialog';
 
 interface User {
     id: number;
@@ -23,30 +25,80 @@ interface Role {
 }
 
 export default function UsersIndex({ users, roles }: { users: { data: User[], links: any }, roles: Role[] }) {
-    const [editingUser, setEditingUser] = useState<User | null>(null);
+    // State for Create/Edit Dialog
     const [open, setOpen] = useState(false);
-    
-    // Local state for selected roles in dialog
+    const [editingUser, setEditingUser] = useState<User | null>(null);
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+    
+    // State for Delete Dialog
+    const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; user: User | null }>({
+        open: false,
+        user: null,
+    });
 
-    const handleEdit = (user: User) => {
-        setEditingUser(user);
-        setSelectedRoles(user.roles.map(r => r.name));
-        setOpen(true);
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        roles: [] as string[],
+    });
+
+    useEffect(() => {
+        if (!open) {
+            reset();
+            clearErrors();
+            setEditingUser(null);
+            setSelectedRoles([]);
+        }
+    }, [open]);
+
+    // Update form data when editing
+    useEffect(() => {
+        if (editingUser) {
+            setData({
+                name: editingUser.name,
+                email: editingUser.email,
+                password: '',
+                password_confirmation: '',
+                roles: editingUser.roles.map(r => r.name),
+            });
+            setSelectedRoles(editingUser.roles.map(r => r.name));
+        }
+    }, [editingUser]);
+
+    // Handle Roles Checkbox Change
+    const handleRoleChange = (roleName: string, checked: boolean) => {
+        let newRoles = [...selectedRoles];
+        if (checked) {
+            newRoles.push(roleName);
+        } else {
+            newRoles = newRoles.filter(r => r !== roleName);
+        }
+        setSelectedRoles(newRoles);
+        setData('roles', newRoles);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!editingUser) return;
+        
+        // Manual sync of roles state to form data just in case
+        data.roles = selectedRoles;
 
-        router.post(route('api.admin.users.roles.store', editingUser.id), {
-            roles: selectedRoles
-        }, {
-            onSuccess: () => {
-                setOpen(false);
-                setEditingUser(null);
-            }
-        });
+        if (editingUser) {
+            put(route('admin.users.update', editingUser.id), {
+                onSuccess: () => setOpen(false),
+            });
+        } else {
+            post(route('admin.users.store'), {
+                onSuccess: () => setOpen(false),
+            });
+        }
+    };
+
+    const handleEdit = (user: User) => {
+        setEditingUser(user);
+        setOpen(true);
     };
 
     const columns: ColumnDef<User>[] = [
@@ -77,10 +129,18 @@ export default function UsersIndex({ users, roles }: { users: { data: User[], li
             id: 'actions',
             header: 'Aksi',
             cell: ({ row }) => (
-                <Button variant="outline" size="sm" onClick={() => handleEdit(row.original)}>
-                    <Shield className="mr-2 h-3 w-3" />
-                    Manage Roles
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
+                        <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => setDeleteDialog({ open: true, user: row.original })}
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
             ),
         },
     ];
@@ -92,60 +152,116 @@ export default function UsersIndex({ users, roles }: { users: { data: User[], li
                 { title: 'Users & Roles', href: '#' },
             ]}
         >
-            <Head title="Manage Users Roles" />
+            <Head title="Manage Users" />
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Users & Roles</h1>
                         <p className="text-muted-foreground mt-2">
-                            Kelola role untuk setiap pengguna (Super Admin Only)
+                            Kelola pengguna dan hak akses role mereka
                         </p>
                     </div>
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <UserPlus className="mr-2 h-4 w-4" />
+                                Tambah User
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-lg">
+                            <DialogHeader>
+                                <DialogTitle>{editingUser ? 'Edit User' : 'Tambah User Baru'}</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">Nama Lengkap</Label>
+                                    <Input
+                                        id="name"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        placeholder="Nama User"
+                                        required
+                                    />
+                                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(e) => setData('email', e.target.value)}
+                                        placeholder="email@example.com"
+                                        required
+                                    />
+                                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password">Password</Label>
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            value={data.password}
+                                            onChange={(e) => setData('password', e.target.value)}
+                                            placeholder={editingUser ? "(Biarkan kosong jika tetap)" : "Password"}
+                                            required={!editingUser}
+                                        />
+                                        {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password_confirmation">Konfirmasi Password</Label>
+                                        <Input
+                                            id="password_confirmation"
+                                            type="password"
+                                            value={data.password_confirmation}
+                                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                                            placeholder={editingUser ? "" : "Ulangi Password"}
+                                            required={!editingUser}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3 border rounded-md p-4">
+                                    <Label>Assign Roles</Label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {roles.map((role) => (
+                                            <div key={role.id} className="flex items-center space-x-2">
+                                                <Checkbox 
+                                                    id={`role-${role.id}`}
+                                                    checked={selectedRoles.includes(role.name)}
+                                                    onCheckedChange={(checked: boolean) => handleRoleChange(role.name, checked)}
+                                                />
+                                                <Label htmlFor={`role-${role.id}`} className="capitalize cursor-pointer">
+                                                    {role.name.replace('_', ' ')}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {errors.roles && <p className="text-sm text-red-500">{errors.roles}</p>}
+                                </div>
+
+                                <DialogFooter>
+                                    <Button type="submit" disabled={processing}>
+                                        {editingUser ? 'Simpan Perubahan' : 'Buat User'}
+                                    </Button>
+                                </DialogFooter>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
 
                 <DataTable columns={columns} data={users.data} searchColumn="name" />
 
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Manage Roles for {editingUser?.name}</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-4">
-                                <Label>Select Roles</Label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {roles.map((role) => {
-                                        const isChecked = selectedRoles.includes(role.name);
-                                        return (
-                                            <div key={role.id} className="flex items-center space-x-2 border p-3 rounded-md">
-                                                <Checkbox 
-                                                    id={`role-${role.id}`} 
-                                                    checked={isChecked}
-                                                    onCheckedChange={(checked: boolean) => {
-                                                        if (checked) {
-                                                            setSelectedRoles([...selectedRoles, role.name]);
-                                                        } else {
-                                                            setSelectedRoles(selectedRoles.filter(r => r !== role.name));
-                                                        }
-                                                    }}
-                                                />
-                                                <Label htmlFor={`role-${role.id}`} className="capitalize cursor-pointer flex-1">
-                                                    {role.name.replace('_', ' ')}
-                                                </Label>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                            <div className="flex justify-end pt-4">
-                                <Button type="submit">
-                                    Update Roles
-                                </Button>
-                            </div>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+                <DeleteDialog
+                    open={deleteDialog.open}
+                    onOpenChange={(open) => setDeleteDialog({ open, user: null })}
+                    title="Hapus User"
+                    description={`Apakah Anda yakin ingin menghapus user "${deleteDialog.user?.name}"? Tindakan ini tidak dapat dibatalkan.`}
+                    deleteUrl={route('admin.users.destroy', deleteDialog.user?.id || 0)}
+                />
             </div>
         </AppLayout>
     );

@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 
+use Inertia\Inertia;
+
 class PermissionController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::all();
-        return response()->json($permissions);
+        $permissions = Permission::latest()->get();
+        return Inertia::render('Admin/Permissions/Index', [
+            'permissions' => $permissions
+        ]);
     }
 
     public function store(Request $request)
@@ -20,35 +24,30 @@ class PermissionController extends Controller
             'name' => 'required|string|unique:permissions,name',
         ]);
 
-        $permission = Permission::create(['name' => $request->name]);
+        Permission::create(['name' => $request->name]);
 
-        return response()->json($permission, 201);
+        return redirect()->back()->with('success', 'Permission created successfully');
     }
 
     public function update(Request $request, $id)
     {
         $permission = Permission::findOrFail($id);
         
-        // System core permissions protection?
-        // Maybe implement policy later. For now, allow super_admin.
-
         $request->validate([
             'name' => 'required|string|unique:permissions,name,' . $id,
         ]);
 
         $permission->update(['name' => $request->name]);
 
-        return response()->json($permission);
+        return redirect()->back()->with('success', 'Permission updated successfully');
     }
 
     public function destroy($id)
     {
         $permission = Permission::findOrFail($id);
         
-        // Protect core permissions if needed
-        
         $permission->delete();
 
-        return response()->json(['message' => 'Permission deleted successfully']);
+        return redirect()->back()->with('success', 'Permission deleted successfully');
     }
 }

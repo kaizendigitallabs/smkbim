@@ -15,11 +15,12 @@ class RoleController extends Controller
     // Render Inertia Page
     public function page()
     {
-        // Reuse logic or just fetch? 
-        // For Inertia, we pass data as props.
         $roles = Role::with('permissions')->get();
+        $permissions = Permission::all(); // Pass all permissions for the form
+        
         return Inertia::render('Admin/Roles/Index', [
-            'roles' => $roles
+            'roles' => $roles,
+            'permissions' => $permissions,
         ]);
     }
 
@@ -31,16 +32,16 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
+        // Permission check
+        if (!auth()->user()->hasRole('super_admin')) {
+             return redirect()->back()->with('error', 'Unauthorized.');
+        }
+
         $request->validate([
             'name' => 'required|string|unique:roles,name',
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,name',
         ]);
-
-        // Policy check: admin_sekolah cannot create super_admin
-        if ($request->name === 'super_admin' && !auth()->user()->hasRole('super_admin')) {
-            return response()->json(['message' => 'Unauthorized to create super_admin role'], 403);
-        }
 
         $role = Role::create(['name' => $request->name]);
         
@@ -48,7 +49,7 @@ class RoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        return response()->json($role->load('permissions'), 201);
+        return redirect()->back()->with('success', 'Role created successfully.');
     }
 
     public function show($id)
@@ -59,11 +60,15 @@ class RoleController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Permission check
+        if (!auth()->user()->hasRole('super_admin')) {
+             return redirect()->back()->with('error', 'Unauthorized.');
+        }
+
         $role = Role::findOrFail($id);
         
-        // Policy check: admin_sekolah cannot update super_admin role
-        if ($role->name === 'super_admin' && !auth()->user()->hasRole('super_admin')) {
-            return response()->json(['message' => 'Unauthorized to update super_admin role'], 403);
+        if ($role->name === 'super_admin') {
+            return redirect()->back()->with('error', 'Cannot edit super_admin role.');
         }
 
         $request->validate([
@@ -75,38 +80,28 @@ class RoleController extends Controller
         $role->update(['name' => $request->name]);
 
         if ($request->has('permissions')) {
-            // Policy check: admin_sekolah cannot unassign critical permissions from super_admin?
-            // Actually super_admin always has all permissions via Gate::before typically, 
-            // but explicit assignment is also used.
-            // Simplified: prevent modifying super_admin permissions if not super_admin
-            if ($role->name === 'super_admin' && !auth()->user()->hasRole('super_admin')) {
-                 // Skip permission sync or error
-                 return response()->json(['message' => 'Unauthorized to modify permissions of super_admin'], 403);
-            }
-            
             $role->syncPermissions($request->permissions);
         }
 
-        return response()->json($role->load('permissions'));
+        return redirect()->back()->with('success', 'Role updated successfully.');
     }
 
     public function destroy($id)
     {
-        $role = Role::findOrFail($id);
-
-        // Policy check: Only super_admin can delete
+        // Permission check
         if (!auth()->user()->hasRole('super_admin')) {
-            return response()->json(['message' => 'Only super_admin can delete roles'], 403);
+             return redirect()->back()->with('error', 'Unauthorized.');
         }
 
-        // Prevent deleting super_admin role
+        $role = Role::findOrFail($id);
+
         if ($role->name === 'super_admin') {
-            return response()->json(['message' => 'Cannot delete super_admin role'], 403);
+            return redirect()->back()->with('error', 'Cannot delete super_admin role.');
         }
 
         $role->delete();
 
-        return response()->json(['message' => 'Role deleted successfully']);
+        return redirect()->back()->with('success', 'Role deleted successfully.');
     }
 
     public function permissions($id)

@@ -44,12 +44,14 @@ export default function SubjectTeacher({
     assignments,
     users,
     subjects,
-    classes
+    classes,
+    activeAcademicYear
 }: {
     assignments: Assignment[];
     users: User[];
     subjects: Subject[];
     classes: SchoolClass[];
+    activeAcademicYear: string;
 }) {
     const [open, setOpen] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; item: Assignment | null }>({
@@ -62,7 +64,7 @@ export default function SubjectTeacher({
         user_id: '',
         subject_id: '',
         class_id: 'no_class', // 'no_class' means All Classes (null)
-        academic_year: '2024/2025',
+        academic_year: activeAcademicYear,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -204,19 +206,16 @@ export default function SubjectTeacher({
                                     <p className="text-xs text-muted-foreground">Pilih "Semua Kelas" jika guru mengajar mapel ini di seluruh kelas.</p>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Tahun Ajaran</Label>
+                                    <Label>Tahun Ajaran (Sesuai Penetapan)</Label>
                                     <Select
-                                        onValueChange={(val) => setData('academic_year', val)}
                                         value={data.academic_year}
+                                        disabled
                                     >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Pilih Tahun" />
+                                        <SelectTrigger className="bg-muted">
+                                            <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="2024/2025">2024/2025</SelectItem>
-                                            <SelectItem value="2025/2026">2025/2026</SelectItem>
-                                        </SelectContent>
                                     </Select>
+                                    <p className="text-xs text-muted-foreground">Tahun ajaran aktif dari pengaturan rapot</p>
                                     {errors.academic_year && <p className="text-sm text-red-500">{errors.academic_year}</p>}
                                 </div>
                                 <div className="flex justify-end pt-4">

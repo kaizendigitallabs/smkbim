@@ -22,7 +22,13 @@ interface SchoolClass {
     };
 }
 
-export default function Index({ classes }: { classes: SchoolClass[] }) {
+interface ActiveAcademicYear {
+    id: number;
+    name: string;
+    semester: string;
+}
+
+export default function Index({ classes, activeAcademicYear }: { classes: SchoolClass[], activeAcademicYear?: ActiveAcademicYear }) {
     const [open, setOpen] = useState(false);
     const [editingClass, setEditingClass] = useState<SchoolClass | null>(null);
     const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; item: SchoolClass | null }>({
@@ -33,7 +39,7 @@ export default function Index({ classes }: { classes: SchoolClass[] }) {
     const { data, setData, post, put, processing, errors, reset } = useForm({
         name: '',
         level: '',
-        academic_year: '2024/2025',
+        academic_year: activeAcademicYear?.name || '2024/2025',
         description: '',
     });
 
@@ -136,6 +142,11 @@ export default function Index({ classes }: { classes: SchoolClass[] }) {
                         if (!val) {
                             setEditingClass(null);
                             reset();
+                        } else {
+                            // Reset to active year if creating new
+                            if (!editingClass) {
+                                setData('academic_year', activeAcademicYear?.name || '2024/2025');
+                            }
                         }
                     }}>
                         <DialogTrigger asChild>
@@ -170,15 +181,16 @@ export default function Index({ classes }: { classes: SchoolClass[] }) {
                                         />
                                         {errors.level && <p className="text-sm text-red-500">{errors.level}</p>}
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="academic_year">Tahun Ajaran</Label>
-                                        <Input
-                                            id="academic_year"
-                                            value={data.academic_year}
-                                            onChange={(e) => setData('academic_year', e.target.value)}
-                                        />
-                                        {errors.academic_year && <p className="text-sm text-red-500">{errors.academic_year}</p>}
-                                    </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="academic_year">Tahun Ajaran (Sesuai Penetapan)</Label>
+                                            <Input
+                                                id="academic_year"
+                                                value={data.academic_year}
+                                                readOnly
+                                                className="bg-muted"
+                                            />
+                                            {errors.academic_year && <p className="text-sm text-red-500">{errors.academic_year}</p>}
+                                        </div>
                                 </div>
                                 <div className="flex justify-end pt-4">
                                     <Button type="submit" disabled={processing}>
@@ -192,13 +204,15 @@ export default function Index({ classes }: { classes: SchoolClass[] }) {
 
                 <DataTable columns={columns} data={classes} searchColumn="name" />
 
-                <DeleteDialog
-                    open={deleteDialog.open}
-                    onOpenChange={(open) => setDeleteDialog({ open, item: null })}
-                    title="Hapus Kelas"
-                    description={`Apakah Anda yakin ingin menghapus kelas "${deleteDialog.item?.name}"?`}
-                    deleteUrl={route('api.admin.classes.destroy', deleteDialog.item?.id || 0)}
-                />
+                {deleteDialog.item && (
+                    <DeleteDialog
+                        open={deleteDialog.open}
+                        onOpenChange={(open) => setDeleteDialog({ open, item: null })}
+                        title="Hapus Kelas"
+                        description={`Apakah Anda yakin ingin menghapus kelas "${deleteDialog.item.name}"?`}
+                        deleteUrl={route('api.admin.classes.destroy', deleteDialog.item.id)}
+                    />
+                )}
             </div>
         </AppLayout>
     );

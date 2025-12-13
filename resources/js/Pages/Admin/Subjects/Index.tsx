@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
 import { DeleteDialog } from '@/components/delete-dialog';
 
@@ -16,6 +17,8 @@ interface Subject {
     name: string;
     code: string;
     description: string;
+    subject_group?: 'A' | 'B' | 'C';
+    display_order?: number;
 }
 
 export default function Index({ subjects }: { subjects: Subject[] }) {
@@ -30,6 +33,8 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
         name: '',
         code: '',
         description: '',
+        subject_group: 'A',
+        display_order: 0,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -58,6 +63,8 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
             name: item.name,
             code: item.code,
             description: item.description || '',
+            subject_group: item.subject_group || 'A',
+            display_order: item.display_order || 0,
         });
         setOpen(true);
     };
@@ -77,6 +84,26 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
                     <div className="text-xs text-muted-foreground">{row.original.description}</div>
                 </div>
             ),
+        },
+        {
+            accessorKey: 'subject_group',
+            header: 'Kelompok',
+            cell: ({ row }) => (
+                <div className="text-center">
+                    <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                        row.original.subject_group === 'A' ? 'bg-blue-50 text-blue-700 ring-blue-600/20' :
+                        row.original.subject_group === 'B' ? 'bg-green-50 text-green-700 ring-green-600/20' :
+                        'bg-purple-50 text-purple-700 ring-purple-600/20'
+                    }`}>
+                        {row.original.subject_group || '-'}
+                    </span>
+                </div>
+            ),
+        },
+        {
+            accessorKey: 'display_order',
+            header: 'Urutan',
+            cell: ({ row }) => <div className="text-center">{row.original.display_order || 0}</div>,
         },
         {
             id: 'actions',
@@ -128,7 +155,7 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
                                 Tambah Mapel
                             </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="sm:max-w-2xl">
                             <DialogHeader>
                                 <DialogTitle>{editingSubject ? 'Edit Mapel' : 'Tambah Mapel Baru'}</DialogTitle>
                             </DialogHeader>
@@ -153,6 +180,37 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
                                             placeholder="Matematika"
                                         />
                                         {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                                    </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="subject_group">Kelompok Mapel</Label>
+                                        <Select
+                                            value={data.subject_group}
+                                            onValueChange={(value) => setData('subject_group', value)}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Pilih Kelompok" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="A">A. Muatan Nasional</SelectItem>
+                                                <SelectItem value="B">B. Muatan Kewilayahan</SelectItem>
+                                                <SelectItem value="C">C. Muatan Peminatan Kejuruan</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.subject_group && <p className="text-sm text-red-500">{errors.subject_group}</p>}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="display_order">Urutan Rapot</Label>
+                                        <Input
+                                            id="display_order"
+                                            type="number"
+                                            value={data.display_order}
+                                            onChange={(e) => setData('display_order', parseInt(e.target.value) || 0)}
+                                            placeholder="0"
+                                        />
+                                        {errors.display_order && <p className="text-sm text-red-500">{errors.display_order}</p>}
                                     </div>
                                 </div>
                                 <div className="space-y-2">

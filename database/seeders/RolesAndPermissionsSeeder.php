@@ -54,6 +54,14 @@ class RolesAndPermissionsSeeder extends Seeder
             // PPDB
             'manage_ppdb',
             'view_ppdb_registrations',
+
+            // New Permissions for Operator & TU
+            'manage_user_accounts', // for operator
+            'manage_school_administration', // bundle for TU? or specific ones below
+            'manage_school_profile',
+            'manage_site_settings',
+            'view_reports', // for kepala sekolah
+            'manage_cbt', // for operator
         ];
 
         foreach ($permissions as $permission) {
@@ -115,9 +123,47 @@ class RolesAndPermissionsSeeder extends Seeder
         $guruMapel->givePermissionTo([
             'input_subject_grades',
             'view_subject_students',
+            'view_subject_students',
         ]);
-        
-        // Optional: Assign super_admin role to a specific user if needed (e.g. ID 1)
-        // This is usually done in DatabaseSeeder or manually.
+
+        // New Roles
+
+        // Operator
+        $operator = Role::create(['name' => 'operator']);
+        $operator->givePermissionTo([
+            'manage_user_accounts',
+            'manage_ppdb',
+            'manage_ppdb',
+            'view_ppdb_registrations',
+            'view_all_students',
+            'manage_cbt',
+            // Can manage students/teachers via user accounts
+        ]);
+
+        // Tata Usaha
+        $tataUsaha = Role::create(['name' => 'tata_usaha']);
+        $tataUsaha->givePermissionTo([
+            'manage_classes',
+            'manage_subjects',
+            'manage_school_profile',
+            'manage_site_settings',
+            'view_all_students',
+            'manage_downloads',
+            'manage_activities', // Maybe?
+        ]);
+
+        // Kepala Sekolah
+        $kepalaSekolah = Role::create(['name' => 'kepala_sekolah']);
+        $kepalaSekolah->givePermissionTo([
+            'view_all_students',
+            'view_class_students',
+            'view_reports',
+            // View access to dashboards usually implied or handled by Logic
+        ]);
+
+        // Siswa (Student Role)
+        $siswa = Role::create(['name' => 'siswa']);
+        // Students typically don't have admin permissions, 
+        // they access student portal features handled by controllers
     }
 }

@@ -10,11 +10,11 @@ export default function Videos({ galleries }: { galleries: any }) {
             <Head title="Galeri Video" />
             
             {/* Hero */}
-            <div className="bg-[#F8FDF9] py-20 border-b border-green-50">
+            <div className="bg-[#F8FDF9] dark:bg-slate-950 py-20 border-b border-green-50 dark:border-slate-900">
                 <div className="container mx-auto px-4 text-center">
-                    <Badge className="bg-white text-primary border-primary/20 mb-4 px-4 py-1">Dokumentasi Video</Badge>
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Galeri Video Sekolah</h1>
-                    <p className="text-gray-600 max-w-xl mx-auto text-lg">
+                    <Badge className="bg-white dark:bg-slate-900 text-primary border-primary/20 mb-4 px-4 py-1">Dokumentasi Video</Badge>
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Galeri Video Sekolah</h1>
+                    <p className="text-gray-600 dark:text-gray-300 max-w-xl mx-auto text-lg">
                         Saksikan berbagai kegiatan dan profil sekolah melalui koleksi video kami.
                     </p>
                 </div>
@@ -42,11 +42,11 @@ export default function Videos({ galleries }: { galleries: any }) {
                                         </div>
                                     )}
                                  </div>
-                                 <CardContent className="p-6 bg-white flex-1 flex flex-col">
-                                     <h3 className="font-bold text-xl mb-2 text-gray-900 line-clamp-2 group-hover:text-primary transition-colors">
+                                 <CardContent className="p-6 bg-white dark:bg-slate-900 flex-1 flex flex-col">
+                                     <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white line-clamp-2 group-hover:text-primary transition-colors">
                                         {item.title}
                                      </h3>
-                                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">
+                                     <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4">
                                         {item.description || "Tonton video selengkapnya."}
                                      </p>
                                      <div className="mt-auto flex items-center text-sm font-medium text-primary">
@@ -58,11 +58,11 @@ export default function Videos({ galleries }: { galleries: any }) {
                         </div>
                     )) : (
                         <div className="col-span-full py-20 text-center">
-                            <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                            <div className="bg-gray-50 dark:bg-slate-800 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                                 <VideoIcon className="text-gray-300 w-10 h-10" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900">Belum ada video</h3>
-                            <p className="text-gray-500">Galeri video akan segera diupdate.</p>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Belum ada video</h3>
+                            <p className="text-gray-500 dark:text-gray-400">Galeri video akan segera diupdate.</p>
                         </div>
                     )}
                 </div>
@@ -75,7 +75,7 @@ export default function Videos({ galleries }: { galleries: any }) {
                  )}
                 </div>
                 </div>
-            </div>
+
         </PublicLayout>
     );
 }

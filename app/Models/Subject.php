@@ -13,6 +13,8 @@ class Subject extends Model
     protected $fillable = [
         'name',
         'code',
+        'display_order',
+        'subject_group',
         'description',
     ];
 

@@ -12,8 +12,10 @@ import { ArrowLeft } from 'lucide-react';
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
+        email: '',
+        password: '',
         position: '',
-        subject: '',
+
         contact: '',
         photo: null as File | null,
         is_active: true,
@@ -76,6 +78,34 @@ export default function Create() {
                                 </div>
 
                                 <div className="space-y-2">
+                                    <Label htmlFor="email">Email (Username Login)</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(e) => setData('email', e.target.value)}
+                                        placeholder="nama@sekolah.com"
+                                    />
+                                    {errors.email && (
+                                        <p className="text-sm text-destructive">{errors.email}</p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        value={data.password}
+                                        onChange={(e) => setData('password', e.target.value)}
+                                        placeholder="Min. 8 karakter"
+                                    />
+                                    {errors.password && (
+                                        <p className="text-sm text-destructive">{errors.password}</p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
                                     <Label htmlFor="position">Jabatan</Label>
                                     <Input
                                         id="position"
@@ -88,18 +118,7 @@ export default function Create() {
                                     )}
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="subject">Mata Pelajaran</Label>
-                                    <Input
-                                        id="subject"
-                                        value={data.subject}
-                                        onChange={(e) => setData('subject', e.target.value)}
-                                        placeholder="Matematika, Bahasa Indonesia, dll"
-                                    />
-                                    {errors.subject && (
-                                        <p className="text-sm text-destructive">{errors.subject}</p>
-                                    )}
-                                </div>
+
 
                                 <div className="space-y-2">
                                     <Label htmlFor="contact">Kontak</Label>

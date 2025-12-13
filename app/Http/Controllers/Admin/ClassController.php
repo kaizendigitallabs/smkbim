@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SchoolClass;
+use App\Models\AcademicYear;
 
 use Inertia\Inertia;
 
@@ -18,8 +19,11 @@ class ClassController extends Controller
         }
         
         $classes = SchoolClass::with('homeroomTeacher')->get();
+        $activeAcademicYear = AcademicYear::where('is_active', true)->first();
+
         return Inertia::render('Admin/Classes/Index', [
-            'classes' => $classes
+            'classes' => $classes,
+            'activeAcademicYear' => $activeAcademicYear
         ]);
     }
 
@@ -49,8 +53,8 @@ class ClassController extends Controller
         ]);
 
         $class = SchoolClass::create($request->all());
-
-        return response()->json($class, 201);
+        
+        return redirect()->back()->with('success', 'Class created successfully');
     }
 
     public function update(Request $request, $id)
@@ -71,7 +75,7 @@ class ClassController extends Controller
 
         $class->update($request->all());
 
-        return response()->json($class);
+        return redirect()->back()->with('success', 'Class updated successfully');
     }
 
     public function destroy($id)
@@ -83,6 +87,6 @@ class ClassController extends Controller
         $class = SchoolClass::findOrFail($id);
         $class->delete();
 
-        return response()->json(['message' => 'Class deleted successfully']);
+        return redirect()->back()->with('success', 'Kelas berhasil dihapus');
     }
 }

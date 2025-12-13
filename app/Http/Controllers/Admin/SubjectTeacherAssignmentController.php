@@ -16,13 +16,17 @@ class SubjectTeacherAssignmentController extends Controller
     // Render Inertia Page
     public function page()
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_subject_assignments')) {
              abort(403);
         }
 
+        // Get active academic year from settings
+        $settings = \App\Models\ReportCardSetting::first();
+        $activeAcademicYear = $settings->academic_year ?? date('Y') . '/' . (date('Y') + 1);
+
         $assignments = SubjectTeacherAssignment::with(['user', 'subject', 'schoolClass'])->get();
-        // Get users who have 'guru_mapel' role
-        $users = User::role('guru_mapel')->get(['id', 'name']);
+        // Get users who have 'guru' role (candidates for guru mapel)
+        $users = User::role('guru')->get(['id', 'name']);
         $subjects = Subject::all(['id', 'name']);
         $classes = SchoolClass::all(['id', 'name']);
 
@@ -31,12 +35,13 @@ class SubjectTeacherAssignmentController extends Controller
             'users' => $users,
             'subjects' => $subjects,
             'classes' => $classes,
+            'activeAcademicYear' => $activeAcademicYear,
         ]);
     }
 
     public function index()
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_subject_assignments')) {
              return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -46,7 +51,7 @@ class SubjectTeacherAssignmentController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_subject_assignments')) {
              return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -58,24 +63,28 @@ class SubjectTeacherAssignmentController extends Controller
         ]);
 
         $user = User::findOrFail($request->user_id);
+        if (!$user->hasRole('guru')) {
+             return redirect()->back()->with('error', 'User must have guru role');
+        }
+
         if (!$user->hasRole('guru_mapel')) {
-             return response()->json(['message' => 'User must have guru_mapel role before assignment'], 422);
+            $user->assignRole('guru_mapel');
         }
 
         $assignment = SubjectTeacherAssignment::create($request->all());
 
-        return response()->json($assignment, 201);
+        return redirect()->back()->with('success', 'Assignment created successfully');
     }
 
     public function destroy($id)
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_subject_assignments')) {
              return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $assignment = SubjectTeacherAssignment::findOrFail($id);
         $assignment->delete();
 
-        return response()->json(['message' => 'Assignment deleted successfully']);
+        return redirect()->back()->with('success', 'Assignment deleted successfully');
     }
 }

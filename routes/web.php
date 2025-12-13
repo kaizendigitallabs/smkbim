@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AcademicYearController;
 use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\DownloadController;
@@ -103,6 +104,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('majors', MajorController::class);
         Route::resource('major-programs', MajorProgramController::class);
         Route::resource('student-projects', StudentProjectController::class);
+        
+        // Student Management
+        Route::get('students/export', [App\Http\Controllers\Admin\StudentController::class, 'export'])->name('students.export');
+        Route::get('students/template', [App\Http\Controllers\Admin\StudentController::class, 'template'])->name('students.template');
+        Route::post('students/import', [App\Http\Controllers\Admin\StudentController::class, 'import'])->name('students.import');
+        Route::resource('students', App\Http\Controllers\Admin\StudentController::class);
 
         // Content
         Route::resource('activities', ActivityController::class);
@@ -122,13 +129,36 @@ Route::middleware(['auth'])->group(function () {
         // PPDB
         Route::get('ppdb/settings', [PPDBSettingController::class, 'index'])->name('ppdb.settings.index');
         Route::put('ppdb/settings', [PPDBSettingController::class, 'update'])->name('ppdb.settings.update');
+
+        // Academic Year Management
+        Route::post('/academic-years/{academic_year}/set-active', [AcademicYearController::class, 'setActive'])->name('academic-years.set-active');
+        Route::resource('academic-years', AcademicYearController::class);
+
+        // Report Card Settings (Operator Only)
+        Route::get('report-card-settings', [App\Http\Controllers\Admin\ReportCardSettingController::class, 'index'])->name('report-card-settings.index');
+        Route::post('report-card-settings', [App\Http\Controllers\Admin\ReportCardSettingController::class, 'store'])->name('report-card-settings.store');
+
+        // Permission Management
+        Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class)->except(['create', 'edit', 'show']);
     });
 });
 
 // Inertia Page Routes (Admin)
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     // Role Management Page
-    Route::get('/roles', [App\Http\Controllers\Admin\RoleController::class, 'page'])->name('roles.index');
+    // Role Management Page (Using resource for proper naming)
+    Route::resource('roles', App\Http\Controllers\Admin\RoleController::class)->except(['create', 'edit', 'show']);
+    Route::get('/roles', [App\Http\Controllers\Admin\RoleController::class, 'page'])->name('roles.index'); // Override index for page logic if needed? NO, resource usually takes over.
+    // Actually, page() is custom named as 'page' in many controllers here.
+    // BUT UserRoleController has page(). RoleController has page().
+    // We want admin.roles.index to go to page().
+    // So let's stick to existing pattern or clean it up.
+    // The previous code had: Route::get('/roles', ... 'page')->name('roles.index');
+    // And NO resource route.
+    // I will ADD store/update/destroy routes explicitly or use resource but override index.
+    Route::post('/roles', [App\Http\Controllers\Admin\RoleController::class, 'store'])->name('roles.store');
+    Route::put('/roles/{id}', [App\Http\Controllers\Admin\RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{id}', [App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('roles.destroy');
     
     // Master Data Pages
     Route::get('/classes', [App\Http\Controllers\Admin\ClassController::class, 'page'])->name('classes.index');
@@ -140,6 +170,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // User Management Page
     Route::get('/users', [App\Http\Controllers\Admin\UserRoleController::class, 'page'])->name('users.index');
+    Route::post('/users', [App\Http\Controllers\Admin\UserRoleController::class, 'storeUser'])->name('users.store');
+    Route::put('/users/{id}', [App\Http\Controllers\Admin\UserRoleController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserRoleController::class, 'destroyUser'])->name('users.destroy');
 });
 
 // API RBAC Routes
@@ -153,11 +186,7 @@ Route::prefix('api/admin')->middleware(['auth'])->group(function () {
     Route::get('/roles/{id}/permissions', [App\Http\Controllers\Admin\RoleController::class, 'permissions'])->name('api.admin.roles.permissions');
     Route::post('/roles/{id}/permissions', [App\Http\Controllers\Admin\RoleController::class, 'syncPermissions'])->name('api.admin.roles.syncPermissions');
 
-    // Permission Management
-    Route::get('/permissions', [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('api.admin.permissions.index');
-    Route::post('/permissions', [App\Http\Controllers\Admin\PermissionController::class, 'store'])->name('api.admin.permissions.store');
-    Route::put('/permissions/{id}', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('api.admin.permissions.update');
-    Route::delete('/permissions/{id}', [App\Http\Controllers\Admin\PermissionController::class, 'destroy'])->name('api.admin.permissions.destroy');
+    // Permission Management Routes Removed (Moved to Admin Resource)
 
     // User Role Management
     Route::get('/users/{userId}/roles', [App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('api.admin.users.roles.index');
@@ -181,5 +210,55 @@ Route::prefix('api/admin')->middleware(['auth'])->group(function () {
         Route::delete('/{id}', [App\Http\Controllers\Admin\SubjectTeacherAssignmentController::class, 'destroy'])->name('destroy');
     });
 });
+
+// Teacher Routes (Guru Mapel & Wali Kelas)
+Route::middleware(['auth'])->prefix('teacher')->name('teacher.')->group(function () {
+    // Grade Management (Guru Mapel)
+    Route::prefix('grades')->name('grades.')->group(function () {
+        Route::get('/my-subjects', [App\Http\Controllers\Teacher\GradeController::class, 'mySubjects'])->name('my-subjects');
+        Route::get('/input/{assignmentId}', [App\Http\Controllers\Teacher\GradeController::class, 'inputForm'])->name('input');
+        Route::post('/store', [App\Http\Controllers\Teacher\GradeController::class, 'store'])->name('store');
+        Route::put('/{id}', [App\Http\Controllers\Teacher\GradeController::class, 'update'])->name('update');
+        Route::delete('/{id}', [App\Http\Controllers\Teacher\GradeController::class, 'destroy'])->name('destroy');
+        Route::get('/recap/{assignmentId}', [App\Http\Controllers\Teacher\GradeController::class, 'recap'])->name('recap');
+    });
+    
+    // Attendance Management (Wali Kelas)
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/my-class', [App\Http\Controllers\Teacher\AttendanceController::class, 'myClass'])->name('my-class');
+        Route::post('/bulk-store', [App\Http\Controllers\Teacher\AttendanceController::class, 'bulkStore'])->name('bulk-store');
+        Route::post('/bulk-store-recap', [App\Http\Controllers\Teacher\AttendanceController::class, 'bulkStoreRecap'])->name('bulk-store-recap');
+        Route::put('/{id}', [App\Http\Controllers\Teacher\AttendanceController::class, 'update'])->name('update');
+        Route::get('/recap', [App\Http\Controllers\Teacher\AttendanceController::class, 'recap'])->name('recap');
+    });
+    
+    // Attitude Grade Management (Wali Kelas)
+    Route::prefix('attitude-grades')->name('attitude-grades.')->group(function () {
+        Route::get('/my-class', [App\Http\Controllers\Teacher\AttitudeGradeController::class, 'myClass'])->name('my-class');
+        Route::post('/store', [App\Http\Controllers\Teacher\AttitudeGradeController::class, 'store'])->name('store');
+        Route::put('/{id}', [App\Http\Controllers\Teacher\AttitudeGradeController::class, 'update'])->name('update');
+        Route::post('/store-note', [App\Http\Controllers\Teacher\AttitudeGradeController::class, 'storeNote'])->name('store-note');
+    });
+    
+    // Report Card (All Teachers)
+    Route::prefix('report-card')->name('report-card.')->group(function () {
+        Route::get('/my-class', [App\Http\Controllers\Teacher\ReportCardController::class, 'myClass'])->name('my-class');
+        Route::get('/generate/{studentId}', [App\Http\Controllers\Teacher\ReportCardController::class, 'generate'])->name('generate');
+        Route::get('/print/{studentId}', [App\Http\Controllers\Teacher\ReportCardController::class, 'print'])->name('print');
+    });
+});
+
+// Portal Selection Routes
+Route::get('/portal', function () {
+    return Inertia::render('Auth/PortalSelection');
+})->name('portal.index');
+
+Route::get('/portal/siswa', function () {
+    return Inertia::render('Shared/ComingSoon');
+})->name('portal.siswa');
+
+Route::get('/portal/cbt', function () {
+    return Inertia::render('Shared/ComingSoon');
+})->name('portal.cbt');
 
 require __DIR__.'/auth.php';

@@ -43,11 +43,13 @@ class SubjectController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:subjects,code',
             'description' => 'nullable|string',
+            'subject_group' => 'required|in:A,B,C',
+            'display_order' => 'required|integer|min:0',
         ]);
 
         $subject = Subject::create($request->all());
-
-        return response()->json($subject, 201);
+        
+        return redirect()->back()->with('success', 'Subject created successfully');
     }
 
     public function update(Request $request, $id)
@@ -62,11 +64,14 @@ class SubjectController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:subjects,code,' . $id,
             'description' => 'nullable|string',
+            'subject_group' => 'required|in:A,B,C',
+            'display_order' => 'required|integer|min:0',
         ]);
 
-        $subject->update($request->all());
 
-        return response()->json($subject);
+        $subject->update($request->all());
+        
+        return redirect()->back()->with('success', 'Subject updated successfully');
     }
 
     public function destroy($id)
@@ -77,7 +82,7 @@ class SubjectController extends Controller
 
         $subject = Subject::findOrFail($id);
         $subject->delete();
-
-        return response()->json(['message' => 'Subject deleted successfully']);
+        
+        return redirect()->back()->with('success', 'Subject deleted successfully');
     }
 }

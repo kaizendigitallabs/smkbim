@@ -18,13 +18,18 @@ interface Teacher {
     photo?: string;
     is_active: boolean;
     order: number;
+    user?: {
+        email: string;
+    };
 }
 
 export default function Edit({ teacher }: { teacher: Teacher }) {
     const { data, setData, post, processing, errors } = useForm({
         name: teacher.name,
+        email: teacher.user?.email || '',
+        password: '',
         position: teacher.position || '',
-        subject: teacher.subject || '',
+
         contact: teacher.contact || '',
         photo: null as File | null,
         is_active: teacher.is_active,
@@ -88,6 +93,34 @@ export default function Edit({ teacher }: { teacher: Teacher }) {
                                 </div>
 
                                 <div className="space-y-2">
+                                    <Label htmlFor="email">Email (Username Login)</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(e) => setData('email', e.target.value)}
+                                        placeholder="nama@sekolah.com"
+                                    />
+                                    {errors.email && (
+                                        <p className="text-sm text-destructive">{errors.email}</p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        value={data.password}
+                                        onChange={(e) => setData('password', e.target.value)}
+                                        placeholder="Kosongkan jika tidak ingin mengubah"
+                                    />
+                                    {errors.password && (
+                                        <p className="text-sm text-destructive">{errors.password}</p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
                                     <Label htmlFor="position">Jabatan</Label>
                                     <Input
                                         id="position"
@@ -100,18 +133,7 @@ export default function Edit({ teacher }: { teacher: Teacher }) {
                                     )}
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="subject">Mata Pelajaran</Label>
-                                    <Input
-                                        id="subject"
-                                        value={data.subject}
-                                        onChange={(e) => setData('subject', e.target.value)}
-                                        placeholder="Matematika, Bahasa Indonesia, dll"
-                                    />
-                                    {errors.subject && (
-                                        <p className="text-sm text-destructive">{errors.subject}</p>
-                                    )}
-                                </div>
+
 
                                 <div className="space-y-2">
                                     <Label htmlFor="contact">Kontak</Label>

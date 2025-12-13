@@ -69,17 +69,17 @@ export default function PublicLayout({ children }: Props) {
 
                             {/* Actions */}
                             <div className="flex items-center gap-4">
-                                <ModeToggle />
                                 <Link href="/ppdb">
                                     <Button className="rounded-full bg-primary hover:bg-primary/90 text-white px-6 shadow-sm shadow-primary/30">
                                         PPDB
                                     </Button>
                                 </Link>
-                                <Link href="/login">
-                                    <Button variant="ghost" className="text-gray-600 hover:text-primary hover:bg-primary/5 rounded-full px-6 font-bold">
+                                <Link href="/portal">
+                                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white px-6 font-bold shadow-sm transition-all bg-white dark:bg-slate-950">
                                         Login Portal
                                     </Button>
                                 </Link>
+                                <ModeToggle />
                             </div>
                         </div>
 
@@ -192,7 +192,7 @@ export default function PublicLayout({ children }: Props) {
 
                             <div>
                                 <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-6">Kontak</h4>
-                                <ul className="space-y-4 text-gray-300">
+                                <ul className="space-y-4 text-gray-600 dark:text-gray-400">
                                     <li className="flex gap-3 items-start">
                                         <Phone className="h-6 w-6 text-secondary shrink-0" />
                                         <span className="leading-tight">{siteSetting?.footer_contact_phone || schoolProfile?.phone || '+62 xxx xxxx xxxx'}</span>
@@ -234,7 +234,7 @@ export default function PublicLayout({ children }: Props) {
 // Components matching the reference style
 function NavLink({ href, label }: { href: string; label: string }) {
     return (
-        <Link href={href} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href={href} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
             {label}
         </Link>
     );
@@ -243,12 +243,12 @@ function NavLink({ href, label }: { href: string; label: string }) {
 function NavDropdown({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <div className="relative group">
-            <button className="text-sm font-bold text-gray-600 hover:text-primary transition-colors flex items-center gap-1 group-hover:text-primary py-2">
+            <button className="text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-primary transition-colors flex items-center gap-1 group-hover:text-primary py-2">
                 {label}
                 <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
             </button>
             <div className="absolute top-full left-0 w-56 pt-2 hidden group-hover:block animate-in fade-in zoom-in-95 duration-200 z-50">
-                <div className="bg-white shadow-xl rounded-xl overflow-hidden border border-gray-100 p-2">
+                <div className="bg-white dark:bg-slate-900 shadow-xl rounded-xl overflow-hidden border border-gray-100 dark:border-slate-800 p-2">
                     {children}
                 </div>
             </div>
@@ -258,7 +258,7 @@ function NavDropdown({ label, children }: { label: string; children: React.React
 
 function DropdownLink({ href, children }: { href: string; children: React.ReactNode }) {
     return (
-        <Link href={href} className="block px-4 py-2.5 text-sm text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
+        <Link href={href} className="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-lg transition-colors">
             {children}
         </Link>
     );
@@ -266,7 +266,7 @@ function DropdownLink({ href, children }: { href: string; children: React.ReactN
 
 function MobileNavLink({ href, children, inset }: { href: string; children: React.ReactNode; inset?: boolean }) {
     return (
-        <Link href={href} className={`block px-4 py-2 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg ${inset ? 'pl-8' : ''}`}>
+        <Link href={href} className={`block px-4 py-2 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg ${inset ? 'pl-8' : ''}`}>
             {children}
         </Link>
     );
@@ -279,7 +279,7 @@ function SocialIcon({ href, icon, className }: { href?: string; icon: React.Reac
             href={href} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className={`h-12 w-12 flex items-center justify-center rounded-full transition-transform hover:-translate-y-1 shadow-sm ${className || 'bg-gray-100 text-gray-600 hover:bg-primary hover:text-white'}`}
+            className={`h-12 w-12 flex items-center justify-center rounded-full transition-transform hover:-translate-y-1 shadow-sm ${className || 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white'}`}
         >
             {icon}
         </a>

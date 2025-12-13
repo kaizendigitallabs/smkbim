@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller
 {
@@ -35,6 +38,8 @@ class TeacherController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
             'position' => 'nullable|string|max:255',
             'subject' => 'nullable|string|max:255',
             'contact' => 'nullable|string|max:255',
@@ -43,15 +48,27 @@ class TeacherController extends Controller
             'order' => 'integer|min:0',
         ]);
 
-        // Handle photo upload
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('teachers', 'public');
-        }
+        DB::transaction(function () use ($request, &$validated) {
+            // Create User
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
+            $user->assignRole('guru');
 
-        Teacher::create($validated);
+            // Handle photo upload
+            if ($request->hasFile('photo')) {
+                $validated['photo'] = $request->file('photo')->store('teachers', 'public');
+            }
+
+            $validated['user_id'] = $user->id;
+
+            Teacher::create($validated);
+        });
 
         return redirect()->route('admin.teachers.index')
-            ->with('success', 'Data guru berhasil ditambahkan.');
+            ->with('success', 'Data guru dan akun pengguna berhasil ditambahkan.');
     }
 
     /**
@@ -59,6 +76,7 @@ class TeacherController extends Controller
      */
     public function edit(Teacher $teacher)
     {
+        $teacher->load('user');
         return inertia('Admin/Teachers/Edit', [
             'teacher' => $teacher,
         ]);
@@ -69,22 +87,48 @@ class TeacherController extends Controller
      */
     public function update(Request $request, Teacher $teacher)
     {
-        $validated = $request->validate([
+        $userId = $teacher->user_id;
+
+        $rules = [
             'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . ($userId ?? 'NULL'),
+            'password' => 'nullable|string|min:8',
             'position' => 'nullable|string|max:255',
             'subject' => 'nullable|string|max:255',
             'contact' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
             'order' => 'integer|min:0',
-        ]);
+        ];
 
-        // Handle photo upload
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('teachers', 'public');
-        }
+        /* if user exists, email is required unique to user. if no user, check unique global? */
+        /* assuming linked user */
+        
+        $validated = $request->validate($rules);
 
-        $teacher->update($validated);
+        DB::transaction(function () use ($request, $teacher, $validated) {
+            // Update User if exists
+            if ($teacher->user) {
+                $userData = [
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                ];
+                if (!empty($validated['password'])) {
+                    $userData['password'] = Hash::make($validated['password']);
+                }
+                $teacher->user->update($userData);
+            } else {
+                 // Option: Create user if missing? For now, skip to avoid complexity unless requested.
+                 // But validation checked email... 
+            }
+
+            // Handle photo upload
+            if ($request->hasFile('photo')) {
+                $validated['photo'] = $request->file('photo')->store('teachers', 'public');
+            }
+
+            $teacher->update($validated);
+        });
 
         return redirect()->route('admin.teachers.index')
             ->with('success', 'Data guru berhasil diperbarui.');
@@ -95,9 +139,14 @@ class TeacherController extends Controller
      */
     public function destroy(Teacher $teacher)
     {
-        $teacher->delete();
+        DB::transaction(function () use ($teacher) {
+            if ($teacher->user) {
+                $teacher->user->delete();
+            }
+            $teacher->delete();
+        });
 
         return redirect()->route('admin.teachers.index')
-            ->with('success', 'Data guru berhasil dihapus.');
+            ->with('success', 'Data guru dan akun pengguna berhasil dihapus.');
     }
 }

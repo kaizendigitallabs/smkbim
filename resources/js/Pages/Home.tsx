@@ -56,7 +56,7 @@ export default function Home({
             <PopupBanner />
 
             {/* 1. HERO UTAMA - Emerald to White Gradient */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 py-16 lg:py-24">
+            <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-16 lg:py-24">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#21AD00]/5 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-3xl"></div>
@@ -68,10 +68,10 @@ export default function Home({
                             <Badge className="bg-[#21AD00]/10 text-[#21AD00] border-[#21AD00]/20 font-semibold">
                                 Sekolah Pusat Keunggulan
                             </Badge>
-                            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-gray-900">
+                            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-gray-900 dark:text-gray-50">
                                 SMK Bina Insan Mulia – <span className="text-[#21AD00]">Mempersiapkan Generasi</span> Siap Kerja dan Berakhlak
                             </h1>
-                            <p className="text-lg lg:text-xl text-gray-600 leading-relaxed">
+                            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
                                 Sekolah kejuruan yang fokus membekali siswa dengan keterampilan praktis, karakter kuat, 
                                 dan kesiapan menghadapi dunia industri maupun perguruan tinggi.
                             </p>
@@ -80,15 +80,15 @@ export default function Home({
                             <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
                                     <CheckCircle2 className="w-6 h-6 text-[#21AD00] flex-shrink-0 mt-0.5" />
-                                    <span className="text-gray-700 font-medium">Kurikulum selaras dengan kebutuhan industri</span>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">Kurikulum selaras dengan kebutuhan industri</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <CheckCircle2 className="w-6 h-6 text-[#21AD00] flex-shrink-0 mt-0.5" />
-                                    <span className="text-gray-700 font-medium">Pembinaan karakter dan keagamaan yang intensif</span>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">Pembinaan karakter dan keagamaan yang intensif</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <CheckCircle2 className="w-6 h-6 text-[#21AD00] flex-shrink-0 mt-0.5" />
-                                    <span className="text-gray-700 font-medium">Pendampingan karir dan studi lanjut</span>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">Pendampingan karir dan studi lanjut</span>
                                 </li>
                             </ul>
 
@@ -108,16 +108,16 @@ export default function Home({
                             </div>
 
                             {/* Quick Info Strip */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8 border-t border-gray-200">
-                                <div className="flex items-center gap-2 text-gray-600">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8 border-t border-gray-200 dark:border-slate-700">
+                                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                                     <MapPin className="w-5 h-5 text-[#21AD00]" />
                                     <span className="text-sm font-medium">Lokasi: {schoolProfile?.address || 'Bandung'}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-gray-600">
+                                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                                     <BookOpen className="w-5 h-5 text-[#21AD00]" />
                                     <span className="text-sm font-medium">Kompetensi: {majors[0]?.name || 'RPL'}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-gray-600">
+                                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                                     <Calendar className="w-5 h-5 text-[#21AD00]" />
                                     <span className="text-sm font-bold text-[#21AD00]">PPDB {ppdbIsOpen ? 'Dibuka' : 'Segera'}</span>
                                 </div>
@@ -146,14 +146,14 @@ export default function Home({
                                 </div>
 
                                 {/* Floating badge */}
-                                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-xl px-6 py-4 border border-gray-100">
+                                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 rounded-2xl shadow-xl px-6 py-4 border border-gray-100 dark:border-slate-800">
                                     <div className="flex items-center gap-3">
                                         <div className="w-12 h-12 rounded-full bg-[#21AD00]/10 flex items-center justify-center">
                                             <Award className="w-6 h-6 text-[#21AD00]" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-gray-500 font-medium">Akreditasi</p>
-                                            <p className="text-lg font-bold text-gray-900">A (Unggul)</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Akreditasi</p>
+                                            <p className="text-lg font-bold text-gray-900 dark:text-gray-50">A (Unggul)</p>
                                         </div>
                                     </div>
                                 </div>
@@ -164,14 +164,14 @@ export default function Home({
             </section>
 
             {/* 2. SEKILAS SMK - More Attractive Design */}
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-white dark:bg-slate-900 dark:bg-slate-900">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         {/* Header with decorative element */}
                         <div className="text-center mb-16 relative">
                             <div className="inline-block">
                                 <Badge className="bg-[#21AD00]/10 text-[#21AD00] mb-4">Tentang Kami</Badge>
-                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">
                                     Sekilas Tentang SMK Bina Insan Mulia
                                 </h2>
                                 <div className="h-1 w-24 bg-gradient-to-r from-[#21AD00] to-[#E7974D] mx-auto rounded-full"></div>
@@ -183,28 +183,28 @@ export default function Home({
                             <div className="relative">
                                 <div className="absolute -inset-4 bg-gradient-to-br from-[#21AD00]/5 to-emerald-50 rounded-3xl -z-10"></div>
                                 <div className="p-8 space-y-6">
-                                    <p className="text-gray-700 text-lg leading-relaxed">
+                                    <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
                                         SMK Bina Insan Mulia hadir sebagai sekolah kejuruan yang berkomitmen menyiapkan lulusan yang terampil, 
                                         berkarakter, dan siap menghadapi perubahan zaman.
                                     </p>
-                                    <p className="text-gray-600 leading-relaxed">
+                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                                         Melalui perpaduan antara pembelajaran teori, praktik langsung, serta pembinaan akhlak, 
                                         sekolah ini menjadi tempat tumbuhnya generasi muda yang mandiri dan bertanggung jawab.
                                     </p>
                                     <div className="flex items-center gap-4 pt-4">
                                         <div className="text-center">
                                             <p className="text-4xl font-bold text-[#21AD00]">500+</p>
-                                            <p className="text-sm text-gray-600">Siswa Aktif</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">Siswa Aktif</p>
                                         </div>
                                         <div className="h-12 w-px bg-gray-200"></div>
                                         <div className="text-center">
                                             <p className="text-4xl font-bold text-[#E7974D]">95%</p>
-                                            <p className="text-sm text-gray-600">Tingkat Kelulusan</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">Tingkat Kelulusan</p>
                                         </div>
                                         <div className="h-12 w-px bg-gray-200"></div>
                                         <div className="text-center">
                                             <p className="text-4xl font-bold text-[#21AD00]">15+</p>
-                                            <p className="text-sm text-gray-600">Ekstrakurikuler</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">Ekstrakurikuler</p>
                                         </div>
                                     </div>
                                 </div>
@@ -212,42 +212,42 @@ export default function Home({
 
                             {/* Right: Stacked Cards with Icons */}
                             <div className="grid gap-6">
-                                <Card className="border-0 shadow-lg hover:shadow-xl transition-all group bg-gradient-to-br from-white to-emerald-50/30">
+                                <Card className="border-0 shadow-lg hover:shadow-xl transition-all group bg-gradient-to-br from-white dark:from-slate-900 to-emerald-50/30">
                                     <CardContent className="p-6 flex gap-4">
                                         <div className="w-14 h-14 rounded-2xl bg-[#21AD00]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#21AD00] group-hover:text-white transition-colors">
                                             <Heart className="w-7 h-7 text-[#21AD00] group-hover:text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-lg mb-2 text-gray-900">Fokus Pembinaan Karakter</h3>
-                                            <p className="text-gray-600 text-sm leading-relaxed">
+                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">Fokus Pembinaan Karakter</h3>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                                                 Pembiasaan ibadah, kedisiplinan, dan budaya saling menghargai menjadi bagian dari keseharian di sekolah.
                                             </p>
                                         </div>
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-0 shadow-lg hover:shadow-xl transition-all group bg-gradient-to-br from-white to-orange-50/30">
+                                <Card className="border-0 shadow-lg hover:shadow-xl transition-all group bg-gradient-to-br from-white dark:from-slate-900 to-orange-50/30">
                                     <CardContent className="p-6 flex gap-4">
                                         <div className="w-14 h-14 rounded-2xl bg-[#E7974D]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#E7974D] group-hover:text-white transition-colors">
                                             <Target className="w-7 h-7 text-[#E7974D] group-hover:text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-lg mb-2 text-gray-900">Lingkungan Belajar Nyaman</h3>
-                                            <p className="text-gray-600 text-sm leading-relaxed">
+                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">Lingkungan Belajar Nyaman</h3>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                                                 Ruang kelas, laboratorium, serta fasilitas pendukung dirancang untuk mendukung proses belajar yang optimal.
                                             </p>
                                         </div>
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-0 shadow-lg hover:shadow-xl transition-all group bg-gradient-to-br from-white to-emerald-50/30">
+                                <Card className="border-0 shadow-lg hover:shadow-xl transition-all group bg-gradient-to-br from-white dark:from-slate-900 to-emerald-50/30">
                                     <CardContent className="p-6 flex gap-4">
                                         <div className="w-14 h-14 rounded-2xl bg-[#21AD00]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#21AD00] group-hover:text-white transition-colors">
                                             <TrendingUp className="w-7 h-7 text-[#21AD00] group-hover:text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-lg mb-2 text-gray-900">Pendampingan Karir & Studi Lanjut</h3>
-                                            <p className="text-gray-600 text-sm leading-relaxed">
+                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">Pendampingan Karir & Studi Lanjut</h3>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                                                 Siswa dibimbing untuk memilih jalur terbaik: langsung bekerja, berwirausaha, atau melanjutkan pendidikan.
                                             </p>
                                         </div>
@@ -260,21 +260,21 @@ export default function Home({
             </section>
 
             {/* 3. KOMPETENSI KEAHLIAN UTAMA */}
-            <section className="py-20 bg-slate-50">
+            <section className="py-20 bg-slate-50 dark:bg-slate-950">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
                             <Badge className="bg-[#21AD00]/10 text-[#21AD00] mb-4">Kompetensi Keahlian</Badge>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">
                                 Kompetensi Keahlian Unggulan
                             </h2>
-                            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
                                 Satu jurusan, fokus pada kualitas penguasaan skill.
                             </p>
                         </div>
 
                         <div className="max-w-6xl mx-auto">
-                            <p className="text-gray-600 text-center mb-12 leading-relaxed">
+                            <p className="text-gray-600 dark:text-gray-400 text-center mb-12 leading-relaxed">
                                 SMK Bina Insan Mulia memiliki satu kompetensi keahlian utama yang menjadi fokus pengembangan keterampilan siswa. 
                                 Setiap materi dirancang untuk mendekatkan siswa dengan kebutuhan dunia kerja dan perkembangan teknologi terkini.
                             </p>
@@ -305,39 +305,39 @@ export default function Home({
 
                                         {/* Right: Content */}
                                         <CardContent className="p-8 lg:p-12 flex flex-col justify-center">
-                                            <h3 className="text-3xl font-bold text-gray-900 mb-4">{majors[0].name}</h3>
-                                            <p className="text-gray-600 mb-6 leading-relaxed line-clamp-3">
+                                            <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">{majors[0].name}</h3>
+                                            <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed line-clamp-3">
                                                 {majors[0].description || 'Belajar pemrograman, pengembangan aplikasi web, dan dasar-dasar sistem informasi dengan pendekatan praktis dan berbasis industri.'}
                                             </p>
 
                                             {/* Skills/Competencies */}
                                             <div className="mb-6">
-                                                <p className="text-sm font-semibold text-gray-700 mb-3">Kompetensi yang Dipelajari:</p>
+                                                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Kompetensi yang Dipelajari:</p>
                                                 <div className="flex flex-wrap gap-2">
                                                     {majors[0].skills ? (
                                                         majors[0].skills.slice(0, 6).map((skill: string, index: number) => (
-                                                            <Badge key={index} variant="outline" className="border-[#21AD00] text-[#21AD00] bg-[#21AD00]/5">
+                                                            <Badge key={index} variant="outline" className="border-[#21AD00] text-[#21AD00] dark:bg-slate-900/50">
                                                                 {skill}
                                                             </Badge>
                                                         ))
                                                     ) : (
                                                         <>
-                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] bg-[#21AD00]/5">
+                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] dark:bg-slate-900/50">
                                                                 Web Development
                                                             </Badge>
-                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] bg-[#21AD00]/5">
+                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] dark:bg-slate-900/50">
                                                                 Mobile Apps
                                                             </Badge>
-                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] bg-[#21AD00]/5">
+                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] dark:bg-slate-900/50">
                                                                 Database
                                                             </Badge>
-                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] bg-[#21AD00]/5">
+                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] dark:bg-slate-900/50">
                                                                 UI/UX Design
                                                             </Badge>
-                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] bg-[#21AD00]/5">
+                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] dark:bg-slate-900/50">
                                                                 Programming
                                                             </Badge>
-                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] bg-[#21AD00]/5">
+                                                            <Badge variant="outline" className="border-[#21AD00] text-[#21AD00] dark:bg-slate-900/50">
                                                                 Project Management
                                                             </Badge>
                                                         </>
@@ -346,14 +346,14 @@ export default function Home({
                                             </div>
 
                                             {/* Quick Facts */}
-                                            <div className="grid grid-cols-2 gap-4 mb-8 pb-8 border-b border-gray-200">
+                                            <div className="grid grid-cols-2 gap-4 mb-8 pb-8 border-b border-gray-200 dark:border-slate-700">
                                                 <div>
-                                                    <p className="text-sm text-gray-500 mb-1">Durasi</p>
-                                                    <p className="font-bold text-gray-900">3 Tahun</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Durasi</p>
+                                                    <p className="font-bold text-gray-900 dark:text-gray-50">3 Tahun</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm text-gray-500 mb-1">Sertifikasi</p>
-                                                    <p className="font-bold text-gray-900">Kompetensi Nasional</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Sertifikasi</p>
+                                                    <p className="font-bold text-gray-900 dark:text-gray-50">Kompetensi Nasional</p>
                                                 </div>
                                             </div>
 
@@ -373,12 +373,12 @@ export default function Home({
             </section>
 
             {/* 4. PROGRAM UNGGULAN SEKOLAH */}
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-white dark:bg-slate-900 dark:bg-slate-900">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
                             <Badge className="bg-[#E7974D]/10 text-[#E7974D] mb-4">Program Unggulan</Badge>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">
                                 Program Unggulan SMK Bina Insan Mulia
                             </h2>
                         </div>
@@ -386,7 +386,7 @@ export default function Home({
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {schoolPrograms.length > 0 ? schoolPrograms.map((program: any, index: number) => {
                                 const colors = [
-                                    { bg: 'bg-[#21AD00]/10', text: 'text-[#21AD00]', hover: 'group-hover:bg-[#21AD00]' },
+                                    { bg: 'bg-[#21AD00]/10 dark:bg-emerald-500/10', text: 'text-[#21AD00]', hover: 'group-hover:bg-[#21AD00]' },
                                     { bg: 'bg-[#E7974D]/10', text: 'text-[#E7974D]', hover: 'group-hover:bg-[#E7974D]' },
                                     { bg: 'bg-purple-100', text: 'text-purple-600', hover: 'group-hover:bg-purple-600' },
                                     { bg: 'bg-blue-100', text: 'text-blue-600', hover: 'group-hover:bg-blue-600' },
@@ -399,8 +399,8 @@ export default function Home({
                                             <div className={`w-16 h-16 rounded-2xl ${color.bg} flex items-center justify-center mx-auto mb-6 ${color.hover} group-hover:text-white transition-colors`}>
                                                 <Lightbulb className={`w-8 h-8 ${color.text} group-hover:text-white`} />
                                             </div>
-                                            <h3 className="font-bold text-xl mb-3 text-gray-900">{program.title}</h3>
-                                            <p className="text-gray-600 text-sm leading-relaxed">{program.description}</p>
+                                            <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-gray-50">{program.title}</h3>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{program.description}</p>
                                         </CardContent>
                                     </Card>
                                 );
@@ -412,7 +412,7 @@ export default function Home({
                                                 <Heart className="w-8 h-8 text-[#21AD00] group-hover:text-white" />
                                             </div>
                                             <h3 className="font-bold text-xl mb-3">Program Pembinaan Keagamaan</h3>
-                                            <p className="text-gray-600 text-sm">Pembiasaan ibadah harian, kajian rutin, dan pembinaan akhlak.</p>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm">Pembiasaan ibadah harian, kajian rutin, dan pembinaan akhlak.</p>
                                         </CardContent>
                                     </Card>
                                     <Card className="border-0 shadow-lg hover:shadow-xl transition-all group">
@@ -421,7 +421,7 @@ export default function Home({
                                                 <Users className="w-8 h-8 text-[#E7974D] group-hover:text-white" />
                                             </div>
                                             <h3 className="font-bold text-xl mb-3">Program Kemitraan Industri</h3>
-                                            <p className="text-gray-600 text-sm">Kerja sama dengan mitra industri untuk praktik kerja lapangan.</p>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm">Kerja sama dengan mitra industri untuk praktik kerja lapangan.</p>
                                         </CardContent>
                                     </Card>
                                     <Card className="border-0 shadow-lg hover:shadow-xl transition-all group">
@@ -430,7 +430,7 @@ export default function Home({
                                                 <TrendingUp className="w-8 h-8 text-purple-600 group-hover:text-white" />
                                             </div>
                                             <h3 className="font-bold text-xl mb-3">Program Kewirausahaan</h3>
-                                            <p className="text-gray-600 text-sm">Pembelajaran bisnis dasar dan simulasi usaha.</p>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm">Pembelajaran bisnis dasar dan simulasi usaha.</p>
                                         </CardContent>
                                     </Card>
                                     <Card className="border-0 shadow-lg hover:shadow-xl transition-all group">
@@ -439,7 +439,7 @@ export default function Home({
                                                 <Target className="w-8 h-8 text-blue-600 group-hover:text-white" />
                                             </div>
                                             <h3 className="font-bold text-xl mb-3">Bimbingan Karir & Studi Lanjut</h3>
-                                            <p className="text-gray-600 text-sm">Konseling karir dan pendampingan pendaftaran kampus.</p>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm">Konseling karir dan pendampingan pendaftaran kampus.</p>
                                         </CardContent>
                                     </Card>
                                 </>
@@ -450,15 +450,15 @@ export default function Home({
             </section>
 
             {/* 5. KEGIATAN & PRESTASI (MERGED) - More Attractive */}
-            <section className="py-20 bg-gradient-to-br from-[#21AD00]/5 via-white to-emerald-50/30">
+            <section className="py-20 bg-gradient-to-br from-[#21AD00]/5 via-white to-emerald-50/30 dark:from-slate-900 dark:to-slate-950">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
                             <Badge className="bg-[#21AD00]/10 text-[#21AD00] mb-4">Aktivitas & Prestasi</Badge>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">
                                 Kegiatan Siswa & Prestasi Membanggakan
                             </h2>
-                            <p className="text-gray-600 max-w-3xl mx-auto">
+                            <p className="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
                                 Aktivitas siswa tidak berhenti di dalam kelas. Berbagai kegiatan, ekstrakurikuler, dan prestasi 
                                 menjadi bukti kesungguhan sekolah dalam mendampingi proses belajar.
                             </p>
@@ -470,7 +470,7 @@ export default function Home({
                                 
                                 return (
                                     <Card key={activity.id} className="border-0 shadow-lg hover:shadow-2xl transition-all group overflow-hidden">
-                                        <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                                        <div className="aspect-video bg-gray-100 dark:bg-slate-800 relative overflow-hidden">
                                             {activity.image ? (
                                                 <img 
                                                     src={`/storage/${activity.image}`} 
@@ -494,14 +494,14 @@ export default function Home({
                                             )}
                                         </div>
                                         <CardContent className="p-6">
-                                            <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                                            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-3">
                                                 <Calendar className="w-4 h-4" />
                                                 <span>{new Date(activity.date).toLocaleDateString('id-ID')}</span>
                                             </div>
                                             <h3 className="font-bold text-xl mb-3 group-hover:text-[#21AD00] transition-colors line-clamp-2">
                                                 {activity.title}
                                             </h3>
-                                            <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4">
                                                 {activity.description}
                                             </p>
                                             <Link href={`/kegiatan/${activity.id}`} className="text-[#21AD00] font-medium text-sm hover:underline inline-flex items-center gap-1">
@@ -513,7 +513,7 @@ export default function Home({
                                 );
                             }) : (
                                 <div className="col-span-3 text-center py-12">
-                                    <p className="text-gray-500">Kegiatan dan prestasi akan segera ditampilkan.</p>
+                                    <p className="text-gray-500 dark:text-gray-400">Kegiatan dan prestasi akan segera ditampilkan.</p>
                                 </div>
                             )}
                         </div>
@@ -522,115 +522,105 @@ export default function Home({
             </section>
 
             {/* 6. BERITA & ARTIKEL - Featured Layout */}
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-white dark:bg-slate-900 dark:bg-slate-900">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
                             <Badge className="bg-[#E7974D]/10 text-[#E7974D] mb-4">Berita & Artikel</Badge>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">
                                 Berita & Artikel Terbaru
                             </h2>
-                            <p className="text-gray-600 max-w-3xl mx-auto">
+                            <p className="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
                                 Ikuti perkembangan terbaru seputar kegiatan sekolah, informasi penting, 
                                 serta artikel edukatif yang relevan bagi siswa dan orang tua.
                             </p>
                         </div>
 
                         {articles.length > 0 ? (
-                            <div className="grid lg:grid-cols-3 gap-8">
-                                {/* Featured Article - Large */}
-                                <div className="lg:col-span-2">
-                                    <Card className="border-0 shadow-xl hover:shadow-2xl transition-all group overflow-hidden h-full">
-                                        <div className="aspect-[16/10] bg-gray-100 relative overflow-hidden">
-                                            {articles[0].featured_image ? (
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {articles.slice(0, 3).map((article: any) => (
+                                    <div key={article.id} className="group flex flex-col h-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
+                                        {/* Image Container */}
+                                        <div className="relative aspect-[4/3] overflow-hidden">
+                                            {article.featured_image ? (
                                                 <img 
-                                                    src={`/storage/${articles[0].featured_image}`} 
-                                                    alt={articles[0].title}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                                    src={`/storage/${article.featured_image}`} 
+                                                    alt={article.title}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full bg-gradient-to-br from-[#E7974D]/10 to-orange-50 flex items-center justify-center">
-                                                    <BookOpen className="w-24 h-24 text-[#E7974D]/30" />
+                                                <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+                                                    <BookOpen className="w-12 h-12 text-gray-300" />
                                                 </div>
                                             )}
-                                            <Badge className="absolute top-6 left-6 bg-[#21AD00] text-white shadow-lg">
-                                                {articles[0].category || 'Berita Utama'}
-                                            </Badge>
+                                            
+                                            {/* Date Badge */}
+                                            <div className="absolute top-4 left-4 bg-white dark:bg-slate-900/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                                <Calendar className="w-3.5 h-3.5 text-[#21AD00]" />
+                                                {new Date(article.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                                            </div>
+                                            
+                                            {/* Category Overlay */}
+                                            <div className="absolute bottom-4 right-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                                                <Badge className="bg-[#21AD00] text-white hover:bg-[#21AD00] shadow-lg">
+                                                    {article.category || 'Berita'}
+                                                </Badge>
+                                            </div>
                                         </div>
-                                        <CardContent className="p-8">
-                                            <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-                                                <Calendar className="w-4 h-4" />
-                                                <span>{new Date(articles[0].published_at).toLocaleDateString('id-ID', { dateStyle: 'long' })}</span>
-                                            </div>
-                                            <h3 className="font-bold text-2xl lg:text-3xl mb-4 group-hover:text-[#21AD00] transition-colors leading-tight">
-                                                {articles[0].title}
-                                            </h3>
-                                            <p className="text-gray-600 leading-relaxed mb-6 line-clamp-3">
-                                                {articles[0].excerpt}
-                                            </p>
-                                            <Link href={`/artikel/${articles[0].slug}`} className="text-[#21AD00] font-bold hover:underline inline-flex items-center gap-2">
-                                                Baca selengkapnya
-                                                <ArrowRight className="w-5 h-5" />
-                                            </Link>
-                                        </CardContent>
-                                    </Card>
-                                </div>
 
-                                {/* Older Articles - Small List */}
-                                <div className="space-y-6">
-                                    {articles.slice(1, 4).map((article: any) => (
-                                        <Card key={article.id} className="border-0 shadow-lg hover:shadow-xl transition-all group overflow-hidden">
-                                            <div className="flex gap-4 p-4">
-                                                <div className="w-24 h-24 rounded-xl bg-gray-100 relative overflow-hidden flex-shrink-0">
-                                                    {article.featured_image ? (
-                                                        <img 
-                                                            src={`/storage/${article.featured_image}`} 
-                                                            alt={article.title}
-                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
-                                                            <BookOpen className="w-8 h-8 text-gray-300" />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                                                        <Calendar className="w-3 h-3" />
-                                                        <span>{new Date(article.published_at).toLocaleDateString('id-ID')}</span>
-                                                    </div>
-                                                    <h4 className="font-bold text-sm mb-2 group-hover:text-[#21AD00] transition-colors line-clamp-2">
-                                                        {article.title}
-                                                    </h4>
-                                                    <Link href={`/artikel/${article.slug}`} className="text-[#21AD00] font-medium text-xs hover:underline inline-flex items-center gap-1">
-                                                        Baca
-                                                        <ArrowRight className="w-3 h-3" />
-                                                    </Link>
+                                        {/* Content */}
+                                        <div className="flex flex-col flex-grow p-6">
+                                            <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-gray-50 group-hover:text-[#21AD00] transition-colors line-clamp-2 leading-tight">
+                                                <Link href={`/artikel/${article.slug}`}>
+                                                    {article.title}
+                                                </Link>
+                                            </h3>
+                                            
+                                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 flex-grow">
+                                                {article.excerpt}
+                                            </p>
+                                            
+                                            <div className="pt-4 mt-auto border-t border-gray-100 dark:border-slate-800 flex items-center justify-between">
+                                                <Link href={`/artikel/${article.slug}`} className="text-[#21AD00] text-sm font-semibold hover:underline inline-flex items-center gap-1">
+                                                    Baca Selengkapnya
+                                                </Link>
+                                                <div className="w-8 h-8 rounded-full dark:bg-slate-900/50 flex items-center justify-center group-hover:bg-[#21AD00] transition-colors">
+                                                    <ArrowRight className="w-4 h-4 text-[#21AD00] group-hover:text-white transition-colors" />
                                                 </div>
                                             </div>
-                                        </Card>
-                                    ))}
-                                </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12">
-                                <p className="text-gray-500">Artikel akan segera ditampilkan.</p>
+                            <div className="text-center py-12 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700">
+                                <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                                <p className="text-gray-500 dark:text-gray-400 font-medium">Belum ada berita atau artikel yang diterbitkan.</p>
                             </div>
                         )}
+
+                        <div className="text-center mt-12">
+                            <Link href="/artikel">
+                                <Button variant="outline" size="lg" className="rounded-full border-2 border-[#21AD00] text-[#21AD00] hover:bg-[#21AD00]/5 px-8 font-bold">
+                                    Lihat Semua Berita
+                                    <ArrowRight className="ml-2 w-4 h-4" />
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* 7. GALERI SINGKAT */}
-            <section className="py-20 bg-slate-50">
+            <section className="py-20 bg-slate-50 dark:bg-slate-950">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
                             <Badge className="bg-[#21AD00]/10 text-[#21AD00] mb-4">Galeri</Badge>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">
                                 Galeri Kegiatan & Fasilitas
                             </h2>
-                            <p className="text-gray-600 max-w-3xl mx-auto">
+                            <p className="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
                                 Beberapa momen dan suasana di SMK Bina Insan Mulia yang menggambarkan lingkungan belajar, 
                                 kegiatan siswa, dan fasilitas yang tersedia.
                             </p>
@@ -651,7 +641,7 @@ export default function Home({
                                 </div>
                             )) : (
                                 <div className="col-span-3 text-center py-12">
-                                    <p className="text-gray-500">Galeri akan segera ditampilkan.</p>
+                                    <p className="text-gray-500 dark:text-gray-400">Galeri akan segera ditampilkan.</p>
                                 </div>
                             )}
                         </div>
@@ -669,32 +659,32 @@ export default function Home({
             </section>
 
             {/* 8. TESTIMONI - More Attractive */}
-            <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-orange-50/30">
+            <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-orange-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
                             <Badge className="bg-[#E7974D]/10 text-[#E7974D] mb-4">Testimoni</Badge>
-                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">
                                 Apa Kata Mereka?
                             </h2>
-                            <p className="text-gray-600 max-w-2xl mx-auto">
+                            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                                 Dengarkan pengalaman dari orang tua siswa, alumni, dan mitra industri kami.
                             </p>
                         </div>
 
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {testimonials.length > 0 ? testimonials.slice(0, 3).map((testimonial: any) => (
-                                <Card key={testimonial.id} className="border-0 shadow-lg hover:shadow-xl transition-all bg-white">
+                                <Card key={testimonial.id} className="border-0 shadow-lg hover:shadow-xl transition-all bg-white dark:bg-slate-900">
                                     <CardContent className="p-8 relative">
                                         <div className="absolute top-6 right-6 opacity-10">
-                                            <Quote className="w-16 h-16 text-gray-900" />
+                                            <Quote className="w-16 h-16 text-gray-900 dark:text-gray-50" />
                                         </div>
                                         <div className="flex items-center gap-1 mb-4">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star key={i} className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />
                                             ))}
                                         </div>
-                                        <p className="text-gray-700 italic mb-6 leading-relaxed relative z-10">
+                                        <p className="text-gray-700 dark:text-gray-300 italic mb-6 leading-relaxed relative z-10">
                                             "{testimonial.content}"
                                         </p>
                                         <div className="flex items-center gap-4">
@@ -702,25 +692,25 @@ export default function Home({
                                                 <Users className="w-7 h-7 text-[#21AD00]" />
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900">{testimonial.name}</p>
-                                                <p className="text-sm text-gray-600">{testimonial.role || 'Orang Tua Siswa'}</p>
+                                                <p className="font-bold text-gray-900 dark:text-gray-50">{testimonial.name}</p>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role || 'Orang Tua Siswa'}</p>
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
                             )) : (
                                 <>
-                                    <Card className="border-0 shadow-lg bg-white">
+                                    <Card className="border-0 shadow-lg bg-white dark:bg-slate-900">
                                         <CardContent className="p-8 relative">
                                             <div className="absolute top-6 right-6 opacity-10">
-                                                <Quote className="w-16 h-16 text-gray-900" />
+                                                <Quote className="w-16 h-16 text-gray-900 dark:text-gray-50" />
                                             </div>
                                             <div className="flex items-center gap-1 mb-4">
                                                 {[...Array(5)].map((_, i) => (
                                                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                                                 ))}
                                             </div>
-                                            <p className="text-gray-700 italic mb-6 leading-relaxed">
+                                            <p className="text-gray-700 dark:text-gray-300 italic mb-6 leading-relaxed">
                                                 "Sejak bersekolah di sini, anak saya jadi lebih disiplin dan punya gambaran jelas tentang masa depannya."
                                             </p>
                                             <div className="flex items-center gap-4">
@@ -729,22 +719,22 @@ export default function Home({
                                                 </div>
                                                 <div>
                                                     <p className="font-bold">Ibu Siti</p>
-                                                    <p className="text-sm text-gray-600">Orang Tua Siswa</p>
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400">Orang Tua Siswa</p>
                                                 </div>
                                             </div>
                                         </CardContent>
                                     </Card>
-                                    <Card className="border-0 shadow-lg bg-white">
+                                    <Card className="border-0 shadow-lg bg-white dark:bg-slate-900">
                                         <CardContent className="p-8 relative">
                                             <div className="absolute top-6 right-6 opacity-10">
-                                                <Quote className="w-16 h-16 text-gray-900" />
+                                                <Quote className="w-16 h-16 text-gray-900 dark:text-gray-50" />
                                             </div>
                                             <div className="flex items-center gap-1 mb-4">
                                                 {[...Array(5)].map((_, i) => (
                                                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                                                 ))}
                                             </div>
-                                            <p className="text-gray-700 italic mb-6 leading-relaxed">
+                                            <p className="text-gray-700 dark:text-gray-300 italic mb-6 leading-relaxed">
                                                 "Bekal keterampilan dari SMK Bina Insan Mulia sangat membantu saya ketika mulai bekerja di industri."
                                             </p>
                                             <div className="flex items-center gap-4">
@@ -753,7 +743,7 @@ export default function Home({
                                                 </div>
                                                 <div>
                                                     <p className="font-bold">Ahmad Fauzi</p>
-                                                    <p className="text-sm text-gray-600">Alumni 2022</p>
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400">Alumni 2022</p>
                                                 </div>
                                             </div>
                                         </CardContent>
@@ -782,13 +772,13 @@ export default function Home({
                         
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link href="/ppdb/register">
-                                <Button size="lg" className="bg-white text-[#21AD00] hover:bg-gray-50 h-14 px-8 text-lg font-bold shadow-xl">
+                                <Button size="lg" className="bg-white dark:bg-slate-900 text-[#21AD00] hover:bg-gray-50 dark:bg-slate-800 h-14 px-8 text-lg font-bold shadow-xl">
                                     Daftar PPDB
                                     <ArrowRight className="ml-2 w-5 h-5" />
                                 </Button>
                             </Link>
                             <Link href="/kontak">
-                                <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#21AD00] h-14 px-8 text-lg font-bold transition-all">
+                                <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white dark:bg-slate-900 hover:text-[#21AD00] h-14 px-8 text-lg font-bold transition-all">
                                     Hubungi Admin Sekolah
                                 </Button>
                             </Link>

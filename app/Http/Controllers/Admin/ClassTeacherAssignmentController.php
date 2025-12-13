@@ -15,25 +15,30 @@ class ClassTeacherAssignmentController extends Controller
     // Render Inertia Page
     public function page()
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_class_assignments')) {
              abort(403);
         }
 
+        // Get active academic year from settings
+        $settings = \App\Models\ReportCardSetting::first();
+        $activeAcademicYear = $settings->academic_year ?? date('Y') . '/' . (date('Y') + 1);
+
         $assignments = ClassTeacherAssignment::with(['user', 'schoolClass'])->get();
-        // Get users who have 'wali_kelas' role
-        $users = User::role('wali_kelas')->get(['id', 'name']);
+        // Get users who have 'guru' role (candidates for wali kelas)
+        $users = User::role('guru')->get(['id', 'name']);
         $classes = SchoolClass::all(['id', 'name']);
 
         return Inertia::render('Admin/Assignments/ClassTeacher/Index', [
             'assignments' => $assignments,
             'users' => $users,
             'classes' => $classes,
+            'activeAcademicYear' => $activeAcademicYear,
         ]);
     }
 
     public function index()
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_class_assignments')) {
              return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -43,7 +48,7 @@ class ClassTeacherAssignmentController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_class_assignments')) {
              return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -60,8 +65,14 @@ class ClassTeacherAssignmentController extends Controller
         
         // Also check if user has wali_kelas role?
         $user = User::findOrFail($request->user_id);
+        // Validasi user harus guru
+        if (!$user->hasRole('guru')) {
+             return redirect()->back()->with('error', 'User must have guru role');
+        }
+
+        // Auto assign wali_kelas role if not present
         if (!$user->hasRole('wali_kelas')) {
-             return response()->json(['message' => 'User must have wali_kelas role before assignment'], 422);
+            $user->assignRole('wali_kelas');
         }
 
         // Check if class already has a wali kelas for this year?
@@ -70,7 +81,7 @@ class ClassTeacherAssignmentController extends Controller
             ->first();
             
         if ($existing) {
-             return response()->json(['message' => 'Class already has a homeroom teacher for this academic year'], 422);
+             return redirect()->back()->with('error', 'Class already has a homeroom teacher for this academic year');
         }
 
         $assignment = ClassTeacherAssignment::create($request->all());
@@ -82,12 +93,12 @@ class ClassTeacherAssignmentController extends Controller
         $schoolClass->homeroom_teacher_id = $request->user_id;
         $schoolClass->save();
 
-        return response()->json($assignment, 201);
+        return redirect()->back()->with('success', 'Wali Kelas assigned successfully');
     }
 
     public function destroy($id)
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->can('manage_class_assignments')) {
              return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -102,6 +113,6 @@ class ClassTeacherAssignmentController extends Controller
 
         $assignment->delete();
 
-        return response()->json(['message' => 'Assignment deleted successfully']);
+        return redirect()->back()->with('success', 'Assignment deleted successfully');
     }
 }

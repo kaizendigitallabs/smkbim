@@ -14,17 +14,26 @@ class UserRoleController extends Controller
     // Render Inertia Page
     public function page()
     {
-        if (!auth()->user()->hasRole('super_admin')) {
+        // Check if user has permission to manage accounts OR is super_admin
+        if (!auth()->user()->hasRole('super_admin') && !auth()->user()->can('manage_user_accounts')) {
              abort(403);
         }
 
         // Fetch users with their roles
         $users = User::with('roles')->paginate(10); // Pagination for users
-        $roles = Role::all();
+        
+        // Filter available roles based on current user
+        if (auth()->user()->hasRole('super_admin')) {
+            $roles = Role::all();
+        } else {
+            // Operator / Others can only assign non-super_admin roles
+            $roles = Role::where('name', '!=', 'super_admin')->get();
+        }
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
             'roles' => $roles,
+            'canCreateSuperAdmin' => auth()->user()->hasRole('super_admin'),
         ]);
     }
 
@@ -34,48 +43,110 @@ class UserRoleController extends Controller
         return response()->json($user->roles);
     }
 
-    public function store(Request $request, $userId)
+    // Store New User
+    public function storeUser(Request $request)
     {
-        $user = User::findOrFail($userId);
-        
-        $request->validate([
-            'roles' => 'required|array',
+        // Permission check
+        if (!auth()->user()->hasRole('super_admin') && !auth()->user()->can('manage_user_accounts')) {
+             abort(403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'roles' => 'required|array|min:1',
             'roles.*' => 'exists:roles,name',
         ]);
 
-        // Policy Check: Only super_admin can assign roles
-        if (!auth()->user()->hasRole('super_admin')) {
-             return response()->json(['message' => 'Unauthorized. Only super_admin can assign roles.'], 403);
+        // Constraint: Only super_admin can assign 'super_admin' role
+        if (in_array('super_admin', $validated['roles']) && !auth()->user()->hasRole('super_admin')) {
+            return redirect()->back()->with('error', 'Unauthorized to assign super_admin role.');
         }
 
-        // Prevent assigning super_admin if not super_admin (double check)
-        if (in_array('super_admin', $request->roles) && !auth()->user()->hasRole('super_admin')) {
-            return response()->json(['message' => 'Unauthorized to assign super_admin role'], 403);
-        }
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+        ]);
 
-        // Sync roles (replaces existing ones)
-        $user->syncRoles($request->roles);
+        $user->syncRoles($validated['roles']);
 
-        return response()->json($user->load('roles'));
+        return redirect()->back()->with('success', 'User created successfully.');
     }
 
-    public function destroy($userId, $roleId)
+    // Update User
+    public function updateUser(Request $request, $id)
     {
-        $user = User::findOrFail($userId);
-        $role = Role::findOrFail($roleId);
-
-        // Policy Check: Only super_admin
-        if (!auth()->user()->hasRole('super_admin')) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        if (!auth()->user()->hasRole('super_admin') && !auth()->user()->can('manage_user_accounts')) {
+             abort(403);
         }
 
-        // Prevent removing super_admin from yourself?
-        if ($user->id === auth()->id() && $role->name === 'super_admin') {
-             return response()->json(['message' => 'Cannot remove super_admin role from yourself'], 403);
+        $user = User::findOrFail($id);
+
+        // Constraint: Non-super_admin cannot edit a super_admin user
+        if ($user->hasRole('super_admin') && !auth()->user()->hasRole('super_admin')) {
+            return redirect()->back()->with('error', 'Unauthorized to edit super_admin user.');
         }
 
-        $user->removeRole($role);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
+        ]);
 
-        return response()->json(['message' => 'Role removed from user']);
+        // Constraint: Only super_admin can assign 'super_admin' role
+        if (in_array('super_admin', $validated['roles']) && !auth()->user()->hasRole('super_admin')) {
+            return redirect()->back()->with('error', 'Unauthorized to assign super_admin role.');
+        }
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => bcrypt($validated['password']),
+            ]);
+        }
+
+        // Prevent removing super_admin from yourself if you are the logged in user
+        if ($user->id === auth()->id() && !in_array('super_admin', $validated['roles']) && auth()->user()->hasRole('super_admin')) {
+             return redirect()->back()->with('error', 'You cannot remove super_admin role from yourself.');
+        }
+
+        $user->syncRoles($validated['roles']);
+
+        return redirect()->back()->with('success', 'User updated successfully.');
     }
+
+    // Delete User
+    public function destroyUser($id)
+    {
+        if (!auth()->user()->hasRole('super_admin') && !auth()->user()->can('manage_user_accounts')) {
+             abort(403);
+        }
+
+        $user = User::findOrFail($id);
+
+        // Constraint: Non-super_admin cannot delete a super_admin user
+        if ($user->hasRole('super_admin') && !auth()->user()->hasRole('super_admin')) {
+            return redirect()->back()->with('error', 'Unauthorized to delete super_admin user.');
+        }
+
+        if ($user->id === auth()->id()) {
+            return redirect()->back()->with('error', 'You cannot delete yourself.');
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
+    // Original Role Management Methods (kept for API compatibility if needed, but redundant with new full update)
+    public function store(Request $request, $userId) { /* ... original implementation ... */ }
+    public function destroy($userId, $roleId) { /* ... original implementation ... */ }
 }

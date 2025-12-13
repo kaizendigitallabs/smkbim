@@ -101,4 +101,11 @@ class User extends Authenticatable
     {
         return $this->subjectAssignments()->with(['subject', 'schoolClass'])->get();
     }
+    /**
+     * Get the teacher profile associated with the user.
+     */
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
 }
