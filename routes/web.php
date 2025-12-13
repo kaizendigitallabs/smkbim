@@ -76,14 +76,9 @@ Route::get('/ppdb/success/{id}', [PPDBPublicController::class, 'success'])->name
 
 Route::get('/login', function () {
     return Inertia::render('Auth/Login');
-})->middleware('guest')->name('login');
+})->middleware('guest');
 
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-    ->middleware('guest');
 
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
@@ -148,17 +143,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Role Management Page
     // Role Management Page (Using resource for proper naming)
     Route::resource('roles', App\Http\Controllers\Admin\RoleController::class)->except(['create', 'edit', 'show']);
-    Route::get('/roles', [App\Http\Controllers\Admin\RoleController::class, 'page'])->name('roles.index'); // Override index for page logic if needed? NO, resource usually takes over.
-    // Actually, page() is custom named as 'page' in many controllers here.
-    // BUT UserRoleController has page(). RoleController has page().
-    // We want admin.roles.index to go to page().
-    // So let's stick to existing pattern or clean it up.
-    // The previous code had: Route::get('/roles', ... 'page')->name('roles.index');
-    // And NO resource route.
-    // I will ADD store/update/destroy routes explicitly or use resource but override index.
-    Route::post('/roles', [App\Http\Controllers\Admin\RoleController::class, 'store'])->name('roles.store');
-    Route::put('/roles/{id}', [App\Http\Controllers\Admin\RoleController::class, 'update'])->name('roles.update');
-    Route::delete('/roles/{id}', [App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('roles.destroy');
+    Route::get('/roles', [App\Http\Controllers\Admin\RoleController::class, 'page'])->name('roles.index'); 
     
     // Master Data Pages
     Route::get('/classes', [App\Http\Controllers\Admin\ClassController::class, 'page'])->name('classes.index');
