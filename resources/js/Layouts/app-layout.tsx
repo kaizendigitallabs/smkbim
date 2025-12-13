@@ -1,4 +1,4 @@
-import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
+import AppLayoutTemplate from '@/Layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
