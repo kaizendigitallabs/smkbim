@@ -265,27 +265,7 @@ npm run type-check
 
 ## 🚀 Deployment
 
-### Production Build
-```bash
-# Build assets
-npm run build
-
-# Optimize Laravel
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# Set permissions
-chmod -R 755 storage bootstrap/cache
-```
-
-### Environment Variables
-Update `.env` for production:
-```env
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://smkbim.sch.id
-```
+For detailed deployment instructions, please refer to [Deployment Guide](doc/deployment.md).
 
 ## 🤝 Contributing
 

@@ -202,6 +202,8 @@ Route::middleware(['auth'])->prefix('teacher')->name('teacher.')->group(function
     Route::prefix('grades')->name('grades.')->group(function () {
         Route::get('/my-subjects', [App\Http\Controllers\Teacher\GradeController::class, 'mySubjects'])->name('my-subjects');
         Route::get('/input/{assignmentId}', [App\Http\Controllers\Teacher\GradeController::class, 'inputForm'])->name('input');
+        Route::get('/input/{assignmentId}/template', [App\Http\Controllers\Teacher\GradeController::class, 'template'])->name('template');
+        Route::post('/input/{assignmentId}/import', [App\Http\Controllers\Teacher\GradeController::class, 'import'])->name('import');
         Route::post('/store', [App\Http\Controllers\Teacher\GradeController::class, 'store'])->name('store');
         Route::put('/{id}', [App\Http\Controllers\Teacher\GradeController::class, 'update'])->name('update');
         Route::delete('/{id}', [App\Http\Controllers\Teacher\GradeController::class, 'destroy'])->name('destroy');

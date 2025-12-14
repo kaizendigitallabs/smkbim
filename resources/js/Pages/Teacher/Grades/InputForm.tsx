@@ -13,7 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { ArrowLeft, Plus, Pencil, Trash2, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Pencil, Trash2, Save, FileSpreadsheet, Upload, Download } from 'lucide-react';
 import { useState } from 'react';
 import {
     Dialog,
@@ -84,6 +84,10 @@ export default function InputForm({
     const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; grade?: Grade }>({
         open: false,
     });
+    
+    const [importDialog, setImportDialog] = useState(false);
+    const [importFile, setImportFile] = useState<File | null>(null);
+    const [isImporting, setIsImporting] = useState(false);
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         student_id: 0,
@@ -139,6 +143,26 @@ export default function InputForm({
                 },
             });
         }
+    };
+    
+    const handleImport = (e: React.FormEvent) => {
+        e.preventDefault();
+        if(!importFile) return;
+        
+        setIsImporting(true);
+        const formData = new FormData();
+        formData.append('file', importFile);
+        
+        router.post(route('teacher.grades.import', { assignmentId: assignment.id, class_id: assignment.school_class.id }), formData, {
+            onSuccess: () => {
+                 setImportDialog(false);
+                 setImportFile(null);
+                 setIsImporting(false);
+            },
+            onError: () => {
+                 setIsImporting(false);
+            },
+        });
     };
 
     const getStudentGrades = (studentId: number, type: string): Grade[] => {
@@ -253,6 +277,13 @@ export default function InputForm({
                         <p className="text-muted-foreground mt-2">
                             {assignment.school_class.name} • Semester {currentSemester} • {currentAcademicYear}
                         </p>
+                    </div>
+                    
+                    <div className="ml-auto">
+                        <Button variant="outline" onClick={() => setImportDialog(true)}>
+                            <FileSpreadsheet className="mr-2 h-4 w-4" />
+                            Import / Export Excel
+                        </Button>
                     </div>
                 </div>
 
@@ -393,6 +424,56 @@ export default function InputForm({
                 description="Apakah Anda yakin ingin menghapus nilai ini? Tindakan ini tidak dapat dibatalkan."
                 deleteUrl={route('teacher.grades.destroy', deleteDialog.grade?.id || 0)}
             />
+            {/* Import Dialog */}
+            <Dialog open={importDialog} onOpenChange={setImportDialog}>
+                <DialogContent>
+                     <DialogHeader>
+                        <DialogTitle>Import / Export Nilai Excel</DialogTitle>
+                        <DialogDescription>
+                            Unduh template, isi nilai, lalu unggah kembali.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="space-y-6 py-4">
+                        <div className="space-y-2">
+                             <Label>1. Download Template</Label>
+                             <div className="text-sm text-muted-foreground mb-2">
+                                 Template ini sudah berisi daftar siswa kelas {assignment.school_class.name}.
+                             </div>
+                             <Button variant="secondary" className="w-full" asChild>
+                                 <a href={route('teacher.grades.template', { assignmentId: assignment.id, class_id: assignment.school_class.id }) + `?t=${Date.now()}`} target="_blank">
+                                     <Download className="mr-2 h-4 w-4" />
+                                     Download Template Excel
+                                 </a>
+                             </Button>
+                        </div>
+                        
+                        <div className="space-y-2 border-t pt-4">
+                             <Label>2. Upload File Nilai</Label>
+                             <div className="text-sm text-muted-foreground mb-2">
+                                 Pastikan format sesuai template. Kolom "Tipe" harus diisi (daily, daily_exam, midterm, final).
+                             </div>
+                             <Input 
+                                type="file" 
+                                accept=".xlsx, .xls"
+                                onChange={(e) => setImportFile(e.target.files ? e.target.files[0] : null)}
+                             />
+                        </div>
+                    </div>
+                    
+                    <div className="flex justify-end gap-2">
+                         <Button variant="outline" onClick={() => setImportDialog(false)}>Batal</Button>
+                         <Button onClick={handleImport} disabled={!importFile || isImporting}>
+                             {isImporting ? 'Mengunggah...' : (
+                                 <>
+                                     <Upload className="mr-2 h-4 w-4" />
+                                     Upload Nilai
+                                 </>
+                             )}
+                         </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }

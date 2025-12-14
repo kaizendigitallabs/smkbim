@@ -115,7 +115,7 @@ export default function Recap({
                     <CardHeader>
                         <CardTitle>Rekap Nilai Siswa</CardTitle>
                         <CardDescription>
-                            Rumus: Nilai Akhir = (Rata-rata Harian × 30%) + (Rata-rata Ujian Harian × 30%) + (UTS × 20%) + (UAS × 20%)
+                            Rumus: Nilai Akhir = (Rata-rata Harian × 30%) + (Rata-rata Ujian Harian × 30%) + (UTS × 15%) + (UAS × 25%)
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -141,13 +141,13 @@ export default function Recap({
                                         <TableHead className="text-center">
                                             <div>UTS</div>
                                             <div className="text-xs font-normal text-muted-foreground">
-                                                (20%)
+                                                (15%)
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-center">
                                             <div>UAS</div>
                                             <div className="text-xs font-normal text-muted-foreground">
-                                                (20%)
+                                                (25%)
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-center font-bold">
@@ -247,8 +247,8 @@ export default function Recap({
                                 <ul className="space-y-1 text-muted-foreground">
                                     <li>Nilai Harian: 30%</li>
                                     <li>Ujian Harian: 30%</li>
-                                    <li>UTS: 20%</li>
-                                    <li>UAS: 20%</li>
+                                    <li>UTS: 15%</li>
+                                    <li>UAS: 25%</li>
                                 </ul>
                             </div>
                         </div>

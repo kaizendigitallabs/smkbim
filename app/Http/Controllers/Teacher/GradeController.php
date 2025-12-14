@@ -9,6 +9,9 @@ use App\Models\ReportCardSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GradeTemplateExport;
+use App\Imports\GradeImport;
 
 class GradeController extends Controller
 {
@@ -226,8 +229,8 @@ class GradeController extends Controller
             $scoreMidterm = $midterm ? $midterm->score : 0;
             $scoreFinal = $final ? $final->score : 0;
             
-            // Calculate final grade: (30% daily + 30% daily_exam + 20% midterm + 20% final)
-            $finalGrade = ($avgDaily * 0.3) + ($avgDailyExam * 0.3) + ($scoreMidterm * 0.2) + ($scoreFinal * 0.2);
+            // Calculate final grade: (30% daily + 30% daily_exam + 15% midterm + 25% final)
+            $finalGrade = ($avgDaily * 0.3) + ($avgDailyExam * 0.3) + ($scoreMidterm * 0.15) + ($scoreFinal * 0.25);
             
             return [
                 'student' => $student,
@@ -247,5 +250,48 @@ class GradeController extends Controller
             'currentSemester' => $currentSemester,
             'currentAcademicYear' => $currentAcademicYear,
         ]);
+    }
+
+    public function template(Request $request, $assignmentId)
+    {
+        $assignment = SubjectTeacherAssignment::findOrFail($assignmentId);
+        
+        // Verify 
+        if ($assignment->user_id !== Auth::id()) {
+             abort(403);
+        }
+
+        $targetClassId = $assignment->class_id ?? $request->query('class_id');
+        if (!$targetClassId) {
+             abort(404, 'Class required for template');
+        }
+        
+        $schoolClass = \App\Models\SchoolClass::findOrFail($targetClassId);
+        $students = $schoolClass->students()->with('user')->orderBy('nis')->get();
+
+        return Excel::download(new GradeTemplateExport($students), 'template_nilai_' . $schoolClass->name . '.xlsx');
+    }
+
+    public function import(Request $request, $assignmentId)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        $assignment = SubjectTeacherAssignment::findOrFail($assignmentId);
+        if ($assignment->user_id !== Auth::id()) {
+             abort(403);
+        }
+
+        $settings = ReportCardSetting::first();
+        $semester = $settings->semester ?? 'Ganjil';
+        $academicYear = $settings->academic_year ?? date('Y') . '/' . (date('Y') + 1);
+
+        try {
+            Excel::import(new GradeImport($assignmentId, $semester, $academicYear), $request->file('file'));
+            return redirect()->back()->with('success', 'Nilai berhasil diimpor');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['file' => 'Gagal impor: ' . $e->getMessage()]);
+        }
     }
 }
