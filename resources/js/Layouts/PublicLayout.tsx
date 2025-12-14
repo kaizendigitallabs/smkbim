@@ -31,9 +31,6 @@ export default function PublicLayout({ children }: Props) {
                                     <GraduationCap className="h-7 w-7 text-primary" />
                                 </div>
                             )}
-                            <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                                {siteSetting?.site_name || schoolProfile?.name || 'SMK BIM'}
-                            </span>
                         </Link>
                         
                         {/* Desktop Menu & Actions */}
@@ -75,7 +72,7 @@ export default function PublicLayout({ children }: Props) {
                                     </Button>
                                 </Link>
                                 <Link href="/portal">
-                                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white px-6 font-bold shadow-sm transition-all bg-white dark:bg-slate-950">
+                                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white px-6 font-bold shadow-sm transition-all bg-white dark:bg-slate-950 dark:border-primary dark:text-primary">
                                         Login Portal
                                     </Button>
                                 </Link>
@@ -95,45 +92,49 @@ export default function PublicLayout({ children }: Props) {
 
                 {/* Mobile Menu */}
                 {mobileMenuOpen && (
-                    <div className="lg:hidden border-t bg-white dark:bg-slate-900 dark:border-slate-800 absolute w-full left-0 top-20 shadow-lg p-4 animate-in slide-in-from-top-2">
-                        <div className="space-y-4">
+                    <div className="lg:hidden border-t bg-white dark:bg-slate-900 dark:border-slate-800 absolute w-full left-0 top-20 shadow-lg p-4 animate-in slide-in-from-top-2 overflow-y-auto max-h-[80vh]">
+                        <div className="space-y-2">
                             <MobileNavLink href="/">Beranda</MobileNavLink>
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4">Profil</p>
+                            
+                            <MobileNavDropdown label="Profil">
                                 <MobileNavLink href="/profil" inset>Tentang Sekolah</MobileNavLink>
                                 <MobileNavLink href="/profil" inset>Struktur Organisasi</MobileNavLink>
                                 <MobileNavLink href="/guru" inset>Guru & Staff</MobileNavLink>
                                 <MobileNavLink href="/program-unggulan" inset>Program Unggulan</MobileNavLink>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4">Jurusan</p>
+                            </MobileNavDropdown>
+
+                            <MobileNavDropdown label="Jurusan">
                                 <MobileNavLink href="/jurusan" inset>Kompetensi Keahlian</MobileNavLink>
                                 <MobileNavLink href="/jurusan" inset>Kurikulum</MobileNavLink>
                                 <MobileNavLink href="/karya-siswa" inset>Portofolio Siswa</MobileNavLink>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4">Kegiatan</p>
+                            </MobileNavDropdown>
+
+                            <MobileNavDropdown label="Kegiatan">
                                 <MobileNavLink href="/kegiatan" inset>Agenda Sekolah</MobileNavLink>
                                 <MobileNavLink href="/ekstrakurikuler" inset>Ekstrakurikuler</MobileNavLink>
                                 <MobileNavLink href="/prestasi" inset>Prestasi</MobileNavLink>
                                 <MobileNavLink href="/galeri/foto" inset>Galeri Sekolah</MobileNavLink>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4">Informasi</p>
+                            </MobileNavDropdown>
+
+                            <MobileNavDropdown label="Informasi">
                                 <MobileNavLink href="/artikel" inset>Berita</MobileNavLink>
                                 <MobileNavLink href="/download" inset>Download</MobileNavLink>
-                            </div>
+                            </MobileNavDropdown>
+
                             <MobileNavLink href="/kontak">Kontak</MobileNavLink>
-                            <div className="pt-2 border-t space-y-2">
-                                <div className="flex justify-center py-2">
+                            
+                            <div className="pt-4 border-t border-gray-100 dark:border-slate-800 space-y-3">
+                                <div className="flex justify-center">
                                     <ModeToggle />
                                 </div>
-                                <Link href="/ppdb" className="block w-full">
-                                    <Button className="w-full bg-secondary text-white">PPDB</Button>
-                                </Link>
-                                <Link href="/login" className="block w-full">
-                                    <Button className="w-full bg-primary text-white">Login Portal</Button>
-                                </Link>
+                                <div className="space-y-3">
+                                    <Link href="/ppdb" className="block w-full">
+                                        <Button className="w-full bg-primary text-white shadow-sm">PPDB</Button>
+                                    </Link>
+                                    <Link href="/portal" className="block w-full">
+                                        <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white dark:border-primary dark:text-primary">Portal</Button>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -161,7 +162,6 @@ export default function PublicLayout({ children }: Props) {
                                 ) : (
                                     <GraduationCap className="h-10 w-10 text-primary" />
                                 )}
-                                <span className="font-bold text-2xl text-gray-900 dark:text-white tracking-tight">{schoolProfile?.name || 'SMK BIM'}</span>
                             </div>
                             <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed max-w-sm">
                                 {schoolProfile?.description || 'Mempersiapkan generasi unggul yang siap kerja dan berdaya saing global dengan kurikulum berbasis industri.'}
@@ -283,5 +283,25 @@ function SocialIcon({ href, icon, className }: { href?: string; icon: React.Reac
         >
             {icon}
         </a>
+    );
+}
+
+function MobileNavDropdown({ label, children }: { label: string; children: React.ReactNode }) {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+        <div className="space-y-1">
+             <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center justify-between px-4 py-2 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            >
+                {label}
+                <ChevronDown size={16} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {isOpen && (
+                <div className="space-y-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                    {children}
+                </div>
+            )}
+        </div>
     );
 }

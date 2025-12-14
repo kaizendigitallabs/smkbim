@@ -450,7 +450,7 @@ export default function Home({
             </section>
 
             {/* 5. KEGIATAN & PRESTASI (MERGED) - More Attractive */}
-            <section className="py-20 bg-gradient-to-br from-[#21AD00]/5 via-white to-emerald-50/30 dark:from-slate-900 dark:to-slate-950">
+            <section className="py-20 bg-gradient-to-br from-[#21AD00]/5 via-white to-emerald-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
                 <div className="container mx-auto px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">

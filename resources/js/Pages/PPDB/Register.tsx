@@ -33,17 +33,21 @@ export default function Register({ majors, isOpen }: { majors: any[], isOpen: bo
         return (
              <PublicLayout>
                 <Head title="Pendaftaran PPDB Ditutup" />
-                <div className="container py-32 text-center bg-[#F8FDF9]">
-                    <div className="max-w-md mx-auto bg-white p-10 rounded-3xl border border-yellow-100 shadow-xl">
-                         <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <AlertCircle className="w-10 h-10 text-yellow-500" />
-                         </div>
-                         <h1 className="text-2xl font-bold text-gray-900 mb-3">Pendaftaran Belum Dibuka</h1>
-                         <p className="text-gray-500 leading-relaxed">
-                            Mohon maaf, periode pendaftaran Peserta Didik Baru (PPDB) saat ini belum dibuka. 
-                            Silahkan pantau website atau sosial media kami untuk informasi terbaru.
-                         </p>
-                         <Button className="mt-8 rounded-full" variant="outline">Kembali ke Beranda</Button>
+                <div className="w-full min-h-[80vh] bg-[#F8FDF9] dark:bg-slate-950 flex flex-col justify-center items-center py-32">
+                    <div className="container mx-auto px-4">
+                        <div className="max-w-md mx-auto bg-white dark:bg-slate-900 p-10 rounded-3xl border border-yellow-100 dark:border-yellow-900/50 shadow-xl text-center">
+                             <div className="w-20 h-20 bg-yellow-50 dark:bg-yellow-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <AlertCircle className="w-10 h-10 text-yellow-500" />
+                             </div>
+                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Pendaftaran Belum Dibuka</h1>
+                             <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Mohon maaf, periode pendaftaran Peserta Didik Baru (PPDB) saat ini belum dibuka. 
+                                Silahkan pantau website atau sosial media kami untuk informasi terbaru.
+                             </p>
+                             <Button className="mt-8 rounded-full" variant="outline" asChild>
+                                 <a href="/">Kembali ke Beranda</a>
+                             </Button>
+                        </div>
                     </div>
                 </div>
              </PublicLayout>

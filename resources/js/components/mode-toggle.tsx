@@ -6,10 +6,11 @@ export function ModeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("light")
 
   useEffect(() => {
-    // Check localStorage and system preference
+    // Check localStorage only, ignore system preference for default
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-    const initialTheme = savedTheme || systemTheme
+    // const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    // Force default to light if no saved theme
+    const initialTheme = savedTheme || "light"
     
     setTheme(initialTheme)
     document.documentElement.classList.toggle("dark", initialTheme === "dark")
