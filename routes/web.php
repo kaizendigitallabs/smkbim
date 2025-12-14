@@ -78,6 +78,9 @@ Route::get('/login', function () {
     return Inertia::render('Auth/Login');
 })->middleware('guest');
 
+require __DIR__.'/auth.php';
+require __DIR__.'/settings.php';
+
 
 
 Route::middleware(['auth'])->group(function () {
