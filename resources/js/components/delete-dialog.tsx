@@ -28,7 +28,7 @@ export function DeleteDialog({
     deleteUrl,
     onSuccess,
 }: DeleteDialogProps) {
-    const { delete: destroy, processing } = useForm();
+    const { delete: destroy, processing } = useForm({});
 
     const handleDelete = () => {
         destroy(deleteUrl, {

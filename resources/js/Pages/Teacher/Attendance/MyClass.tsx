@@ -20,7 +20,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Save, Users, Calendar } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface User {
     id: number;
@@ -82,7 +82,7 @@ export default function MyClass({
         const start = new Date(semesterStartDate);
         const end = new Date(semesterEndDate);
         
-        let current = new Date(start.getFullYear(), start.getMonth(), 1);
+        const current = new Date(start.getFullYear(), start.getMonth(), 1);
         
         while (current <= end) {
             months.push({
@@ -118,7 +118,7 @@ export default function MyClass({
     });
 
     // Load existing data when month changes
-    useMemo(() => {
+    useEffect(() => {
         if (!selectedMonth) return;
         
         // Calculate total days in selected month
