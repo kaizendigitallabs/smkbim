@@ -57,11 +57,15 @@ export default function Recap({
     students,
     currentSemester,
     currentAcademicYear,
+    gradeRoutePrefix = 'teacher.grades',
+    backRoute,
 }: {
     assignment: Assignment;
     students: StudentRecap[];
     currentSemester: string;
     currentAcademicYear: string;
+    gradeRoutePrefix?: string;
+    backRoute?: string;
 }) {
     const getGradeColor = (grade: number) => {
         if (grade >= 85) return 'text-green-600 dark:text-green-400';
@@ -82,7 +86,7 @@ export default function Recap({
         <AppLayout
             breadcrumbs={[
                 { title: 'Dashboard', href: '/dashboard' },
-                { title: 'Mata Pelajaran', href: route('teacher.grades.my-subjects') },
+                { title: 'Mata Pelajaran', href: backRoute || route('teacher.grades.my-subjects') },
                 { title: 'Rekap Nilai', href: '#' },
             ]}
         >
@@ -91,7 +95,7 @@ export default function Recap({
             <div className="space-y-6 p-6">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href={route('teacher.grades.my-subjects')}>
+                        <Link href={backRoute || route('teacher.grades.my-subjects')}>
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
@@ -104,7 +108,7 @@ export default function Recap({
                         </p>
                     </div>
                     <Button variant="outline" asChild>
-                        <Link href={route('teacher.grades.input', assignment.id)}>
+                        <Link href={route(`${gradeRoutePrefix}.input`, { assignmentId: assignment.id, class_id: assignment.school_class.id })}>
                             <FileText className="mr-2 h-4 w-4" />
                             Input Nilai
                         </Link>

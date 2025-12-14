@@ -61,6 +61,8 @@ export default function MyClass({
     currentAcademicYear,
     semesterStartDate,
     semesterEndDate,
+    submitRoute = 'teacher.attendance.bulk-store-recap',
+    backRoute,
 }: {
     assignment: Assignment | null;
     students: Student[];
@@ -69,6 +71,8 @@ export default function MyClass({
     currentAcademicYear: string;
     semesterStartDate: string | null;
     semesterEndDate: string | null;
+    submitRoute?: string;
+    backRoute?: string;
 }) {
     // Generate months in semester
     const semesterMonths = useMemo(() => {
@@ -178,7 +182,7 @@ export default function MyClass({
             absent: parseInt(attendanceRecap[student.id].absent) || 0,
         }));
 
-        router.post(route('teacher.attendance.bulk-store-recap'), {
+        router.post(route(submitRoute), {
             class_id: assignment?.class_id,
             month: selectedMonth,
             semester: currentSemester,
@@ -221,7 +225,7 @@ export default function MyClass({
         <AppLayout
             breadcrumbs={[
                 { title: 'Dashboard', href: '/dashboard' },
-                { title: 'Absensi Kelas', href: '#' },
+                { title: 'Absensi Kelas', href: backRoute || '#' },
             ]}
         >
             <Head title="Absensi Kelas" />

@@ -135,6 +135,26 @@ Route::middleware(['auth'])->group(function () {
 
         // Permission Management
         Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class)->except(['create', 'edit', 'show']);
+
+        // Admin Grade Management
+        Route::prefix('grades')->name('grades.')->group(function () {
+             Route::get('/', [App\Http\Controllers\Admin\GradeController::class, 'index'])->name('index');
+             Route::get('/class/{classId}', [App\Http\Controllers\Admin\GradeController::class, 'showClass'])->name('show'); // Show assignments for class
+             Route::get('/input/{assignmentId}', [App\Http\Controllers\Admin\GradeController::class, 'inputForm'])->name('input');
+             Route::get('/input/{assignmentId}/template', [App\Http\Controllers\Admin\GradeController::class, 'template'])->name('template');
+             Route::post('/input/{assignmentId}/import', [App\Http\Controllers\Admin\GradeController::class, 'import'])->name('import');
+             Route::post('/store', [App\Http\Controllers\Admin\GradeController::class, 'store'])->name('store');
+             Route::put('/{id}', [App\Http\Controllers\Admin\GradeController::class, 'update'])->name('update');
+             Route::delete('/{id}', [App\Http\Controllers\Admin\GradeController::class, 'destroy'])->name('destroy');
+             Route::get('/recap/{assignmentId}', [App\Http\Controllers\Admin\GradeController::class, 'recap'])->name('recap');
+        });
+
+        // Admin Attendance Management
+        Route::prefix('attendance')->name('attendance.')->group(function () {
+             Route::get('/', [App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('index');
+             Route::get('/class/{classId}', [App\Http\Controllers\Admin\AttendanceController::class, 'show'])->name('show');
+             Route::post('/bulk-store-recap', [App\Http\Controllers\Admin\AttendanceController::class, 'bulkStoreRecap'])->name('bulk-store-recap');
+        });
     });
 });
 

@@ -67,12 +67,16 @@ export default function InputForm({
     grades,
     currentSemester,
     currentAcademicYear,
+    gradeRoutePrefix = 'teacher.grades', // Default to teacher
+    backRoute,
 }: {
     assignment: Assignment;
     students: Student[];
     grades: Record<number, Grade[]>;
     currentSemester: string;
     currentAcademicYear: string;
+    gradeRoutePrefix?: string;
+    backRoute?: string;
 }) {
     const [gradeDialog, setGradeDialog] = useState<{
         open: boolean;
@@ -128,7 +132,7 @@ export default function InputForm({
         
         if (gradeDialog.grade) {
             // Update existing grade
-            put(route('teacher.grades.update', gradeDialog.grade.id), {
+            put(route(`${gradeRoutePrefix}.update`, gradeDialog.grade.id), {
                 onSuccess: () => {
                     setGradeDialog({ open: false });
                     reset();
@@ -136,7 +140,7 @@ export default function InputForm({
             });
         } else {
             // Create new grade
-            post(route('teacher.grades.store'), {
+            post(route(`${gradeRoutePrefix}.store`), {
                 onSuccess: () => {
                     setGradeDialog({ open: false });
                     reset();
@@ -153,7 +157,7 @@ export default function InputForm({
         const formData = new FormData();
         formData.append('file', importFile);
         
-        router.post(route('teacher.grades.import', { assignmentId: assignment.id, class_id: assignment.school_class.id }), formData, {
+        router.post(route(`${gradeRoutePrefix}.import`, { assignmentId: assignment.id, class_id: assignment.school_class.id }), formData, {
             onSuccess: () => {
                  setImportDialog(false);
                  setImportFile(null);
@@ -257,7 +261,7 @@ export default function InputForm({
         <AppLayout
             breadcrumbs={[
                 { title: 'Dashboard', href: '/dashboard' },
-                { title: 'Mata Pelajaran', href: route('teacher.grades.my-subjects') },
+                { title: 'Mata Pelajaran', href: backRoute || route(`${gradeRoutePrefix}.my-subjects`) },
                 { title: 'Input Nilai', href: '#' },
             ]}
         >
@@ -266,7 +270,7 @@ export default function InputForm({
             <div className="space-y-6 p-6">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href={route('teacher.grades.my-subjects')}>
+                        <Link href={backRoute || route('teacher.grades.my-subjects')}>
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
@@ -422,7 +426,7 @@ export default function InputForm({
                 onOpenChange={(open) => setDeleteDialog({ open })}
                 title="Hapus Nilai"
                 description="Apakah Anda yakin ingin menghapus nilai ini? Tindakan ini tidak dapat dibatalkan."
-                deleteUrl={route('teacher.grades.destroy', deleteDialog.grade?.id || 0)}
+                deleteUrl={route(`${gradeRoutePrefix}.destroy`, deleteDialog.grade?.id || 0)}
             />
             {/* Import Dialog */}
             <Dialog open={importDialog} onOpenChange={setImportDialog}>
@@ -441,7 +445,7 @@ export default function InputForm({
                                  Template ini sudah berisi daftar siswa kelas {assignment.school_class.name}.
                              </div>
                              <Button variant="secondary" className="w-full" asChild>
-                                 <a href={route('teacher.grades.template', { assignmentId: assignment.id, class_id: assignment.school_class.id }) + `?t=${Date.now()}`} target="_blank">
+                                 <a href={route(`${gradeRoutePrefix}.template`, { assignmentId: assignment.id, class_id: assignment.school_class.id }) + `?t=${Date.now()}`} target="_blank">
                                      <Download className="mr-2 h-4 w-4" />
                                      Download Template Excel
                                  </a>

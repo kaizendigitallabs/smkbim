@@ -19,6 +19,8 @@ import {
     Shield,
     Users,
     BookCheck,
+    GraduationCap,
+    CalendarCheck,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 import { useRole } from '@/hooks/useRole';
@@ -64,6 +66,20 @@ export function AppSidebar() {
                 { title: 'Wali Kelas', href: '/admin/assignments/class-teachers' },
                 { title: 'Guru Mapel', href: '/admin/assignments/subject-teachers' },
             ]
+        });
+    }
+
+    // Admin Grade Management
+    if (hasRole(['super_admin', 'operator'])) {
+        navItems.push({
+            title: 'Manajemen Nilai',
+            href: '/admin/grades',
+            icon: GraduationCap,
+        });
+        navItems.push({
+            title: 'Absensi',
+            href: '/admin/attendance',
+            icon: CalendarCheck,
         });
     }
 
