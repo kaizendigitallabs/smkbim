@@ -70,7 +70,7 @@ Website resmi dan sistem manajemen konten untuk SMK Bina Insan Mulia yang dibang
 
 ## 📋 Prerequisites
 
-- PHP >= 8.2
+- PHP >= 8.4
 - Composer
 - Node.js >= 18
 - MySQL >= 8.0

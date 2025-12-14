@@ -196,7 +196,7 @@ export default function Edit({ student, classes }: { student: Student; classes: 
                                     <Label htmlFor="gender">Jenis Kelamin *</Label>
                                     <Select
                                         value={data.gender}
-                                        onValueChange={(value) => setData('gender', value)}
+                                        onValueChange={(value: 'L' | 'P') => setData('gender', value)}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Pilih jenis kelamin" />

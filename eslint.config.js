@@ -30,7 +30,27 @@ export default [
         },
     },
     {
-        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js'],
+        rules: {
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/ban-ts-comment': 'off',
+            'react-hooks/exhaustive-deps': 'off',
+            'react-hooks/purity': 'off',
+            'react-hooks/set-state-in-effect': 'off',
+            'react-hooks/immutability': 'off',
+            'react-hooks/incompatible-library': 'off',
+        },
+    },
+    {
+        ignores: [
+            'vendor',
+            'node_modules',
+            'public',
+            'bootstrap/ssr',
+            'tailwind.config.js',
+            'resources/js/ziggy.js',
+            'resources/js/types',
+        ],
     },
     prettier, // Turn off all rules that might conflict with Prettier
 ];

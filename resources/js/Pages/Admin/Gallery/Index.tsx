@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/data-table';
 import { DeleteDialog } from '@/components/delete-dialog';
-import { ColumnDef } from '@tanstack/react-table';
+import { type CellContext, type ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
 import { Pencil, Trash2, Plus, Image as ImageIcon, Video } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -28,11 +28,11 @@ export default function Index({ galleries }: { galleries: Gallery[] }) {
         gallery: null,
     });
 
-    const columns: ColumnDef<Gallery[]> = [
+    const columns: ColumnDef<Gallery>[] = [
         {
             accessorKey: 'type',
             header: 'Tipe',
-            cell: ({ row }) => (
+            cell: ({ row }: CellContext<Gallery, Gallery['type']>) => (
                 <Badge variant={row.original.type === 'photo' ? 'default' : 'secondary'}>
                     {row.original.type === 'photo' ? (
                         <><ImageIcon className="h-3 w-3 mr-1" /> Foto</>
@@ -45,7 +45,7 @@ export default function Index({ galleries }: { galleries: Gallery[] }) {
         {
             accessorKey: 'title',
             header: 'Judul',
-            cell: ({ row }) => (
+            cell: ({ row }: CellContext<Gallery, string>) => (
                 <div className="max-w-md">
                     <div className="font-medium">{row.original.title}</div>
                     {row.original.category && (
@@ -57,7 +57,7 @@ export default function Index({ galleries }: { galleries: Gallery[] }) {
         {
             accessorKey: 'activity',
             header: 'Kegiatan',
-            cell: ({ row }) => (
+            cell: ({ row }: CellContext<Gallery, Gallery['activity']>) => (
                 <div className="text-sm">
                     {row.original.activity?.title || '-'}
                 </div>
@@ -66,7 +66,7 @@ export default function Index({ galleries }: { galleries: Gallery[] }) {
         {
             id: 'actions',
             header: 'Aksi',
-            cell: ({ row }) => (
+            cell: ({ row }: CellContext<Gallery, unknown>) => (
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" asChild>
                         <Link href={route('admin.gallery.edit', row.original.id)}>

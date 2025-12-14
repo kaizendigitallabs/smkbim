@@ -24,6 +24,7 @@ export interface NavItem {
     variant?: 'default' | 'ghost';
     items?: NavItem[]; // Added for nested menus
     target?: string;
+    external?: boolean;
 }
 
 export interface BreadcrumbItem {
