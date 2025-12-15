@@ -62,6 +62,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage_site_settings',
             'view_reports', // for kepala sekolah
             'manage_cbt', // for operator
+            'view_website', // for accessing the website link in sidebar
         ];
 
         foreach ($permissions as $permission) {
@@ -86,6 +87,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage_activities',
             'manage_roles', // Limited by policy/controller logic, but needs permission
             'manage_permissions', // Limited by policy/controller logic
+            'view_website',
         ]);
 
         // Admin PPDB

@@ -14,13 +14,14 @@ export default function Login() {
         password: '',
         remember: false,
     });
-    const { props } = usePage();
-    const siteSetting = props.siteSetting as any;
-    const schoolProfile = props.schoolProfile as any;
+    const { props } = usePage<{ flash: { success?: string; error?: string } }>();
+    const { flash } = props;
+    const siteSetting = (props as any).siteSetting;
+    const schoolProfile = (props as any).schoolProfile;
 
     const [showPassword, setShowPassword] = useState(false);
 
-    // Show SweetAlert when there are validation errors
+    // Show SweetAlert when there are validation errors or flash messages
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
             const errorMessages = Object.values(errors).join('<br>');
@@ -31,7 +32,26 @@ export default function Login() {
                 confirmButtonColor: '#21AD00',
             });
         }
-    }, [errors]);
+
+        if (flash?.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: flash.success,
+                confirmButtonColor: '#21AD00',
+                timer: 3000
+            });
+        }
+
+        if (flash?.error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: flash.error,
+                confirmButtonColor: '#d33',
+            });
+        }
+    }, [errors, flash]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

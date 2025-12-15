@@ -15,6 +15,15 @@ class Teacher extends Model
         'is_active',
         'order',
         'user_id',
+        'nip',
+        'nuptk',
+        'gender',
+        'place_of_birth',
+        'date_of_birth',
+        'address',
+        'last_education',
+        'education_major',
+        'university',
     ];
 
     protected $casts = [

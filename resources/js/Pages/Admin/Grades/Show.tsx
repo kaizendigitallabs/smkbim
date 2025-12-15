@@ -4,6 +4,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { BookOpen, Calendar, BarChart3, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
+import { Upload, Download } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { useForm as useInertiaForm } from '@inertiajs/react';
 
 interface Subject {
     id: number;
@@ -38,6 +58,27 @@ export default function Show({
     assignments: Assignment[];
     currentAcademicYear: string;
 }) {
+    const [importOpen, setImportOpen] = useState(false);
+    
+    const { data, setData, post, processing, errors, reset, clearErrors } = useInertiaForm({
+        file: null as File | null,
+        type: 'daily',
+    });
+
+    const handleImport = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(route('admin.grades.bulk-import', schoolClass.id), {
+            onSuccess: () => {
+                setImportOpen(false);
+                reset();
+            },
+        });
+    };
+    
+    const handleTemplate = () => {
+        window.location.href = route('admin.grades.bulk-template', schoolClass.id);
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -62,6 +103,10 @@ export default function Show({
                         </p>
                     </div>
                      <div className="flex items-center gap-2">
+                        <Button variant="outline" onClick={() => setImportOpen(true)}>
+                            <Upload className="mr-2 h-4 w-4" />
+                            Import Nilai (Semua Mapel)
+                        </Button>
                         <Badge variant="outline" className="text-sm">
                             <Calendar className="mr-1 h-3 w-3" />
                             {currentAcademicYear}
@@ -124,6 +169,65 @@ export default function Show({
                     </div>
                 )}
             </div>
+
+            <Dialog open={importOpen} onOpenChange={setImportOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Import Nilai Kolektif</DialogTitle>
+                        <DialogDescription>
+                            Import nilai untuk semua mata pelajaran sekaligus. Gunakan template yang disediakan.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="mb-4">
+                        <Button variant="outline" onClick={handleTemplate} className="w-full">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download Template (Semua Mapel)
+                        </Button>
+                    </div>
+
+                    <form onSubmit={handleImport} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label>Jenis Nilai</Label>
+                            <Select 
+                                value={data.type} 
+                                onValueChange={(val) => setData('type', val)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Pilih jenis nilai" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="daily">Nilai Harian</SelectItem>
+                                    <SelectItem value="daily_exam">Ulangan Harian</SelectItem>
+                                    <SelectItem value="midterm">UTS</SelectItem>
+                                    <SelectItem value="final">UAS</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.type && <p className="text-sm text-destructive">{errors.type}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="file">File Excel</Label>
+                            <Input
+                                id="file"
+                                type="file"
+                                accept=".xlsx, .xls"
+                                onChange={(e) => setData('file', e.target.files ? e.target.files[0] : null)}
+                            />
+                            {errors.file && <p className="text-sm text-destructive">{errors.file}</p>}
+                        </div>
+
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setImportOpen(false)}>
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                {processing ? 'Mengupload...' : 'Import'}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }

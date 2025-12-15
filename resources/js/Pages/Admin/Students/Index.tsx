@@ -19,9 +19,11 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
+    DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useForm as useInertiaForm } from '@inertiajs/react';
 
 interface User {
     id: number;
@@ -60,18 +62,17 @@ export default function Index({ students }: { students: PaginatedStudents }) {
         open: false,
     });
     const [importDialog, setImportDialog] = useState(false);
-    const [importFile, setImportFile] = useState<File | null>(null);
 
-    const handleImport = () => {
-        if (!importFile) return;
+    const { data: importData, setData: setImportData, post: postImport, processing: importProcessing, errors: importErrors, reset: resetImport, clearErrors: clearImportErrors } = useInertiaForm({
+        file: null as File | null,
+    });
 
-        const formData = new FormData();
-        formData.append('file', importFile);
-
-        router.post(route('admin.students.import'), formData, {
+    const handleImport = (e: React.FormEvent) => {
+        e.preventDefault();
+        postImport(route('admin.students.import'), {
             onSuccess: () => {
                 setImportDialog(false);
-                setImportFile(null);
+                resetImport();
             },
         });
     };
@@ -172,7 +173,11 @@ export default function Index({ students }: { students: PaginatedStudents }) {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => setImportDialog(true)}>
+                                <DropdownMenuItem onClick={() => {
+                                    setImportDialog(true);
+                                    clearImportErrors();
+                                    resetImport(); 
+                                }}>
                                     <Upload className="mr-2 h-4 w-4" />
                                     Import Excel
                                 </DropdownMenuItem>
@@ -219,25 +224,28 @@ export default function Index({ students }: { students: PaginatedStudents }) {
                             Upload file Excel untuk mengimport data siswa. Pastikan format sesuai dengan template.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-4">
-                        <div>
+                    <form onSubmit={handleImport} className="space-y-4">
+                        <div className="space-y-2">
                             <Label htmlFor="file">File Excel</Label>
                             <Input
                                 id="file"
                                 type="file"
-                                accept=".xlsx,.xls,.csv"
-                                onChange={(e) => setImportFile(e.target.files?.[0] || null)}
+                                accept=".xlsx, .xls, .csv"
+                                onChange={(e) => setImportData('file', e.target.files ? e.target.files[0] : null)}
                             />
+                            {importErrors.file && (
+                                <p className="text-sm text-destructive">{importErrors.file}</p>
+                            )}
                         </div>
-                        <div className="flex justify-end gap-2">
-                            <Button variant="outline" onClick={() => setImportDialog(false)}>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setImportDialog(false)}>
                                 Batal
                             </Button>
-                            <Button onClick={handleImport} disabled={!importFile}>
-                                Import
+                            <Button type="submit" disabled={importProcessing}>
+                                {importProcessing ? 'Mengimport...' : 'Import'}
                             </Button>
-                        </div>
-                    </div>
+                        </DialogFooter>
+                    </form>
                 </DialogContent>
             </Dialog>
         </AppLayout>

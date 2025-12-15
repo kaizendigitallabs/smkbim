@@ -19,6 +19,11 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
     */
     public function model(array $row)
     {
+        // Skip if NIS already exists
+        if (Student::where('nis', $row['nis'])->exists()) {
+            return null;
+        }
+
         // Find Class ID
         $classId = null;
         if (!empty($row['kelas'])) {
@@ -26,10 +31,8 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
             $classId = $schoolClass ? $schoolClass->id : null;
         }
 
-        // Create User (if not exists ideally, but simple logic creates new or errors if unique constraint)
-        // Check uniqueness manually to avoid error crash?
+        // Create User (skip if email exists)
         if (User::where('email', $row['email'])->exists()) {
-             // Skip or Update? Let's skip existing emails to prevent duplicate entry errors
              return null;
         }
 
@@ -42,16 +45,39 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
 
         $user->assignRole('siswa');
 
+        $dob = null;
+        if (isset($row['tanggal_lahir'])) {
+            try {
+                $dob = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['tanggal_lahir']);
+            } catch (\Throwable $e) {
+                // Fallback attempt if it's a string date like Y-m-d
+                try {
+                    $dob = \Carbon\Carbon::parse($row['tanggal_lahir']);
+                } catch (\Throwable $e) {
+                    $dob = null;
+                }
+            }
+        }
+
         return new Student([
             'user_id' => $user->id,
             'nis' => $row['nis'],
             'nisn' => $row['nisn'],
             'class_id' => $classId,
             'place_of_birth' => $row['tempat_lahir'],
-            'date_of_birth' => isset($row['tanggal_lahir']) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['tanggal_lahir']) : null,
+            'date_of_birth' => $dob,
             'gender' => $row['jenis_kelamin'], // L/P
             'address' => $row['alamat'],
             'parent_phone' => $row['no_hp_ortu'],
+            'religion' => $row['agama'] ?? null,
+            'father_name' => $row['nama_ayah'] ?? null,
+            'mother_name' => $row['nama_ibu'] ?? null,
+            'guardian_name' => $row['nama_wali'] ?? null,
+            'father_job' => $row['pekerjaan_ayah'] ?? null,
+            'mother_job' => $row['pekerjaan_ibu'] ?? null,
+            'guardian_job' => $row['pekerjaan_wali'] ?? null,
+            'previous_school' => $row['asal_sekolah'] ?? null,
+            'entry_year' => $row['tahun_masuk'] ?? null,
         ]);
     }
 
@@ -60,7 +86,7 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
         return [
             'nama' => 'required',
             'email' => 'required|email',
-            'nis' => 'required|unique:students,nis',
+            'nis' => 'required',
         ];
     }
 }

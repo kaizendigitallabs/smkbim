@@ -7,6 +7,11 @@ import { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
 import { Pencil, Trash2, Plus, Image as ImageIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useForm as useInertiaForm } from '@inertiajs/react';
+import { Upload } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Teacher {
     id: number;
@@ -23,6 +28,7 @@ export default function Index({ teachers }: { teachers: Teacher[] }) {
     const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; teacher?: Teacher }>({
         open: false,
     });
+    const [importOpen, setImportOpen] = useState(false);
 
     const columns: ColumnDef<Teacher>[] = [
         {
@@ -93,6 +99,20 @@ export default function Index({ teachers }: { teachers: Teacher[] }) {
         },
     ];
 
+    const { data: importData, setData: setImportData, post: postImport, processing: importProcessing, errors: importErrors, reset: resetImport } = useInertiaForm({
+        file: null as File | null,
+    });
+
+    const handleImport = (e: React.FormEvent) => {
+        e.preventDefault();
+        postImport(route('admin.teachers.import'), {
+            onSuccess: () => {
+                setImportOpen(false);
+                resetImport();
+            },
+        });
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -110,12 +130,18 @@ export default function Index({ teachers }: { teachers: Teacher[] }) {
                             Kelola data guru dan tenaga pendidik
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href={route('admin.teachers.create')}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Tambah Guru
-                        </Link>
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setImportOpen(true)}>
+                            <Upload className="mr-2 h-4 w-4" />
+                            Import Excel
+                        </Button>
+                        <Button asChild>
+                            <Link href={route('admin.teachers.create')}>
+                                <Plus className="mr-2 h-4 w-4" />
+                                Tambah Guru
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 <DataTable
@@ -133,6 +159,39 @@ export default function Index({ teachers }: { teachers: Teacher[] }) {
                 description={`Apakah Anda yakin ingin menghapus ${deleteDialog.teacher?.name}? Tindakan ini tidak dapat dibatalkan.`}
                 deleteUrl={route('admin.teachers.destroy', deleteDialog.teacher?.id || 0)}
             />
+
+            <Dialog open={importOpen} onOpenChange={setImportOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Import Data Guru</DialogTitle>
+                        <DialogDescription>
+                            Upload file Excel (.xlsx, .xls) berisi data guru. Pastikan format sesuai template.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleImport} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="file">File Excel</Label>
+                            <Input
+                                id="file"
+                                type="file"
+                                accept=".xlsx, .xls"
+                                onChange={(e) => setImportData('file', e.target.files ? e.target.files[0] : null)}
+                            />
+                            {importErrors.file && (
+                                <p className="text-sm text-destructive">{importErrors.file}</p>
+                            )}
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setImportOpen(false)}>
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={importProcessing}>
+                                {importProcessing ? 'Mengupload...' : 'Import'}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }

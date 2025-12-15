@@ -234,4 +234,34 @@ class GradeController extends Controller
             return redirect()->back()->withErrors(['file' => 'Gagal impor: ' . $e->getMessage()]);
         }
     }
+    public function bulkTemplate(Request $request, $classId)
+    {
+        $schoolClass = SchoolClass::findOrFail($classId);
+        return Excel::download(new \App\Exports\ClassAllSubjectsGradeExport($classId), 'template_nilai_lengkap_' . $schoolClass->name . '.xlsx');
+    }
+
+    public function bulkImport(Request $request, $classId)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+            'type' => 'required|in:daily,daily_exam,midterm,final',
+        ]);
+        
+        $settings = ReportCardSetting::first();
+        $semester = $settings->semester ?? 'Ganjil';
+        $academicYear = $settings->academic_year ?? date('Y') . '/' . (date('Y') + 1);
+
+        try {
+            Excel::import(new \App\Imports\ClassAllSubjectsGradeImport(
+                $classId, 
+                $request->type, 
+                $semester, 
+                $academicYear
+            ), $request->file('file'));
+            
+            return redirect()->back()->with('success', 'Nilai mapel lengkap berhasil diimpor');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['file' => 'Gagal impor: ' . $e->getMessage()]);
+        }
+    }
 }

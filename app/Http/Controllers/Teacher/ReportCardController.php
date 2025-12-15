@@ -169,6 +169,51 @@ class ReportCardController extends Controller
     }
     
     /**
+     * Print report card front cover (Logo + Name)
+     */
+    public function printFrontCover($studentId)
+    {
+        $student = Student::with(['user', 'schoolClass'])->findOrFail($studentId);
+        $settings = ReportCardSetting::first();
+        $schoolProfile = \App\Models\SchoolProfile::first();
+
+        return Inertia::render('Teacher/ReportCard/PrintFrontCover', [
+            'student' => $student,
+            'settings' => $settings,
+            'schoolProfile' => $schoolProfile,
+        ]);
+    }
+
+    /**
+     * Print report card cover (biodata)
+     */
+    public function printCover($studentId)
+    {
+        $student = Student::with(['user', 'schoolClass'])->findOrFail($studentId);
+        
+        $settings = ReportCardSetting::first();
+        if (!$settings) {
+            return redirect()->back()->with('error', 'Pengaturan rapot belum dikonfigurasi');
+        }
+
+        // Get homeroom teacher assignment for headmaster/wali data usually needed
+        $homeroomTeacher = \App\Models\ClassTeacherAssignment::with('user')
+            ->where('class_id', $student->class_id)
+            ->where('academic_year', $settings->academic_year)
+            ->first();
+
+        // Get school profile
+        $schoolProfile = \App\Models\SchoolProfile::first();
+
+        return Inertia::render('Teacher/ReportCard/PrintCover', [
+            'student' => $student,
+            'settings' => $settings,
+            'schoolProfile' => $schoolProfile,
+            'homeroomTeacher' => $homeroomTeacher,
+        ]);
+    }
+    
+    /**
      * Print report card as PDF
      */
     public function print($studentId)

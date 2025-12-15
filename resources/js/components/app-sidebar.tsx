@@ -186,6 +186,9 @@ export function AppSidebar() {
     // 6. Guru / Academic Menu (Wali Kelas / Guru Mapel)
     if (hasRole(['wali_kelas', 'guru_mapel'])) {
         const academicItems = [];
+        // Common menu for teachers
+        academicItems.push({ title: 'Absensi Guru', href: '/teacher/attendance-teacher' });
+
         if (hasRole('wali_kelas')) {
              academicItems.push({ title: 'Absensi Kelas', href: '/teacher/attendance/my-class' });
              academicItems.push({ title: 'Nilai Sikap', href: '/teacher/attitude-grades/my-class' });
@@ -206,12 +209,14 @@ export function AppSidebar() {
     }
 
     // Always show link to implementation website
-    navItems.push({
-        title: 'Lihat Website',
-        href: '/',
-        icon: ExternalLink,
-        external: true,
-    });
+    if (hasPermission('view_website')) {
+        navItems.push({
+            title: 'Lihat Website',
+            href: '/',
+            icon: ExternalLink,
+            external: true,
+        });
+    }
 
     return (
         <Sidebar collapsible="icon">

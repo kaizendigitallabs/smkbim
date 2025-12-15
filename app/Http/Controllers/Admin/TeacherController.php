@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Imports\TeachersImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -46,6 +48,15 @@ class TeacherController extends Controller
             'photo' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
             'order' => 'integer|min:0',
+            'nip' => 'nullable|string|unique:teachers,nip',
+            'nuptk' => 'nullable|string|unique:teachers,nuptk',
+            'gender' => 'nullable|in:L,P',
+            'place_of_birth' => 'nullable|string',
+            'date_of_birth' => 'nullable|date',
+            'address' => 'nullable|string',
+            'last_education' => 'nullable|string',
+            'education_major' => 'nullable|string',
+            'university' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($request, &$validated) {
@@ -99,6 +110,15 @@ class TeacherController extends Controller
             'photo' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
             'order' => 'integer|min:0',
+            'nip' => 'nullable|string|unique:teachers,nip,' . $teacher->id,
+            'nuptk' => 'nullable|string|unique:teachers,nuptk,' . $teacher->id,
+            'gender' => 'nullable|in:L,P',
+            'place_of_birth' => 'nullable|string',
+            'date_of_birth' => 'nullable|date',
+            'address' => 'nullable|string',
+            'last_education' => 'nullable|string',
+            'education_major' => 'nullable|string',
+            'university' => 'nullable|string',
         ];
 
         /* if user exists, email is required unique to user. if no user, check unique global? */
@@ -148,5 +168,20 @@ class TeacherController extends Controller
 
         return redirect()->route('admin.teachers.index')
             ->with('success', 'Data guru dan akun pengguna berhasil dihapus.');
+    }
+
+    /**
+     * Import teachers from Excel file.
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new TeachersImport, $request->file('file'));
+
+        return redirect()->route('admin.teachers.index')
+            ->with('success', 'Data guru berhasil diimport.');
     }
 }

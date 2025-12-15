@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
         // Master Data
         Route::resource('school-profile', SchoolProfileController::class)->only(['index', 'update']);
         Route::resource('school-programs', SchoolProgramController::class);
+        Route::post('teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
         Route::resource('teachers', TeacherController::class);
         Route::resource('majors', MajorController::class);
         Route::resource('major-programs', MajorProgramController::class);
@@ -150,6 +151,10 @@ Route::middleware(['auth'])->group(function () {
              Route::put('/{id}', [App\Http\Controllers\Admin\GradeController::class, 'update'])->name('update');
              Route::delete('/{id}', [App\Http\Controllers\Admin\GradeController::class, 'destroy'])->name('destroy');
              Route::get('/recap/{assignmentId}', [App\Http\Controllers\Admin\GradeController::class, 'recap'])->name('recap');
+             
+             // Bulk Import Routes (Class Level)
+             Route::get('/class/{classId}/bulk-template', [App\Http\Controllers\Admin\GradeController::class, 'bulkTemplate'])->name('bulk-template');
+             Route::post('/class/{classId}/bulk-import', [App\Http\Controllers\Admin\GradeController::class, 'bulkImport'])->name('bulk-import');
         });
 
         // Admin Attendance Management
@@ -254,8 +259,16 @@ Route::middleware(['auth'])->prefix('teacher')->name('teacher.')->group(function
     Route::prefix('report-card')->name('report-card.')->group(function () {
         Route::get('/my-class', [App\Http\Controllers\Teacher\ReportCardController::class, 'myClass'])->name('my-class');
         Route::get('/generate/{studentId}', [App\Http\Controllers\Teacher\ReportCardController::class, 'generate'])->name('generate');
+        Route::get('/print-front-cover/{studentId}', [App\Http\Controllers\Teacher\ReportCardController::class, 'printFrontCover'])->name('print-front-cover');
+        Route::get('/print-cover/{studentId}', [App\Http\Controllers\Teacher\ReportCardController::class, 'printCover'])->name('print-cover');
         Route::get('/print/{studentId}', [App\Http\Controllers\Teacher\ReportCardController::class, 'print'])->name('print');
     });
+
+    // Teacher Attendance (Placeholder)
+    Route::get('/attendance-teacher', function () {
+        return \Inertia\Inertia::render('Teacher/Attendance/Index');
+    })->name('attendance-teacher');
+
 });
 
 // Portal Selection Routes

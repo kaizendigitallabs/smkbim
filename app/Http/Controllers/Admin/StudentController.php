@@ -42,10 +42,19 @@ class StudentController extends Controller
             'class_id' => 'nullable|exists:classes,id',
             'place_of_birth' => 'nullable|string',
             'date_of_birth' => 'nullable|date',
-            'gender' => 'required|in:L,P',
+            'gender' => 'nullable|in:L,P',
             'address' => 'nullable|string',
             'parent_phone' => 'nullable|string',
             'password' => 'nullable|string|min:8',
+            'religion' => 'nullable|string',
+            'father_name' => 'nullable|string',
+            'mother_name' => 'nullable|string',
+            'guardian_name' => 'nullable|string',
+            'father_job' => 'nullable|string',
+            'mother_job' => 'nullable|string',
+            'guardian_job' => 'nullable|string',
+            'previous_school' => 'nullable|string',
+            'entry_year' => 'nullable|string|max:4',
         ]);
 
         $user = User::create([
@@ -66,6 +75,15 @@ class StudentController extends Controller
             'gender' => $validated['gender'],
             'address' => $validated['address'],
             'parent_phone' => $validated['parent_phone'],
+            'religion' => $validated['religion'] ?? null,
+            'father_name' => $validated['father_name'] ?? null,
+            'mother_name' => $validated['mother_name'] ?? null,
+            'guardian_name' => $validated['guardian_name'] ?? null,
+            'father_job' => $validated['father_job'] ?? null,
+            'mother_job' => $validated['mother_job'] ?? null,
+            'guardian_job' => $validated['guardian_job'] ?? null,
+            'previous_school' => $validated['previous_school'] ?? null,
+            'entry_year' => $validated['entry_year'] ?? null,
         ]);
 
         return redirect()->route('admin.students.index')->with('success', 'Student created successfully');
@@ -95,10 +113,19 @@ class StudentController extends Controller
             'class_id' => 'nullable|exists:classes,id',
             'place_of_birth' => 'nullable|string',
             'date_of_birth' => 'nullable|date',
-            'gender' => 'required|in:L,P',
+            'gender' => 'nullable|in:L,P',
             'address' => 'nullable|string',
             'parent_phone' => 'nullable|string',
             'password' => 'nullable|string|min:8',
+            'religion' => 'nullable|string',
+            'father_name' => 'nullable|string',
+            'mother_name' => 'nullable|string',
+            'guardian_name' => 'nullable|string',
+            'father_job' => 'nullable|string',
+            'mother_job' => 'nullable|string',
+            'guardian_job' => 'nullable|string',
+            'previous_school' => 'nullable|string',
+            'entry_year' => 'nullable|string|max:4',
         ]);
 
         $user->update([
@@ -121,6 +148,15 @@ class StudentController extends Controller
             'gender' => $validated['gender'],
             'address' => $validated['address'],
             'parent_phone' => $validated['parent_phone'],
+            'religion' => $validated['religion'] ?? null,
+            'father_name' => $validated['father_name'] ?? null,
+            'mother_name' => $validated['mother_name'] ?? null,
+            'guardian_name' => $validated['guardian_name'] ?? null,
+            'father_job' => $validated['father_job'] ?? null,
+            'mother_job' => $validated['mother_job'] ?? null,
+            'guardian_job' => $validated['guardian_job'] ?? null,
+            'previous_school' => $validated['previous_school'] ?? null,
+            'entry_year' => $validated['entry_year'] ?? null,
         ]);
 
         return redirect()->route('admin.students.index')->with('success', 'Student updated successfully');

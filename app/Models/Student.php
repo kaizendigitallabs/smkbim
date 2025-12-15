@@ -19,6 +19,15 @@ class Student extends Model
         'gender',
         'address',
         'parent_phone',
+        'religion',
+        'father_name',
+        'mother_name',
+        'guardian_name',
+        'father_job',
+        'mother_job',
+        'guardian_job',
+        'previous_school',
+        'entry_year',
     ];
 
     public function user()

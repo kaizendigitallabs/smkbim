@@ -134,11 +134,31 @@ export default function MyClass({
                                                     </Button>
                                                     <Button
                                                         size="sm"
+                                                        variant="outline"
+                                                        asChild
+                                                    >
+                                                        <a href={route('teacher.report-card.print-front-cover', student.id)} target="_blank" rel="noopener noreferrer">
+                                                            <Printer className="mr-2 h-4 w-4" />
+                                                            Cover Depan
+                                                        </a>
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        asChild
+                                                    >
+                                                        <a href={route('teacher.report-card.print-cover', student.id)} target="_blank" rel="noopener noreferrer">
+                                                            <FileText className="mr-2 h-4 w-4" />
+                                                            Biodata
+                                                        </a>
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
                                                         asChild
                                                     >
                                                         <a href={route('teacher.report-card.print', student.id)} target="_blank" rel="noopener noreferrer">
                                                             <Printer className="mr-2 h-4 w-4" />
-                                                            Cetak
+                                                            Rapot
                                                         </a>
                                                     </Button>
                                                 </div>

@@ -9,9 +9,14 @@ import { Switch } from '@/components/ui/switch';
 import { FormEventHandler } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
+import { useRole } from '@/hooks/useRole';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+
 interface Teacher {
     id: number;
     name: string;
+    email: string; // user email
     position?: string;
     subject?: string;
     contact?: string;
@@ -21,19 +26,42 @@ interface Teacher {
     user?: {
         email: string;
     };
+    nip?: string;
+    nuptk?: string;
+    gender?: string;
+    place_of_birth?: string;
+    date_of_birth?: string;
+    address?: string;
+    last_education?: string;
+    education_major?: string;
+    university?: string;
 }
 
 export default function Edit({ teacher }: { teacher: Teacher }) {
+    const { hasRole } = useRole();
+    const showFullForm = hasRole(['super_admin', 'tata_usaha', 'admin_sekolah']);
+
     const { data, setData, post, processing, errors } = useForm({
         name: teacher.name,
         email: teacher.user?.email || '',
         password: '',
         position: teacher.position || '',
-
+        
         contact: teacher.contact || '',
         photo: null as File | null,
         is_active: teacher.is_active,
         order: teacher.order,
+        
+        nip: teacher.nip || '',
+        nuptk: teacher.nuptk || '',
+        gender: teacher.gender || 'L',
+        place_of_birth: teacher.place_of_birth || '',
+        date_of_birth: teacher.date_of_birth || '',
+        address: teacher.address || '',
+        last_education: teacher.last_education || '',
+        education_major: teacher.education_major || '',
+        university: teacher.university || '',
+
         _method: 'PUT',
     });
 
@@ -68,18 +96,17 @@ export default function Edit({ teacher }: { teacher: Teacher }) {
                         </p>
                     </div>
                 </div>
-
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Informasi Guru</CardTitle>
+                            <CardTitle>Informasi Dasar</CardTitle>
                             <CardDescription>
-                                Perbarui data guru atau tenaga pendidik
+                                Informasi akun dan identitas utama
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid gap-4 md:grid-cols-2">
-                                <div className="space-y-2 md:col-span-2">
+                                <div className="space-y-2">
                                     <Label htmlFor="name">Nama Lengkap *</Label>
                                     <Input
                                         id="name"
@@ -87,9 +114,18 @@ export default function Edit({ teacher }: { teacher: Teacher }) {
                                         onChange={(e) => setData('name', e.target.value)}
                                         placeholder="Nama lengkap guru"
                                     />
-                                    {errors.name && (
-                                        <p className="text-sm text-destructive">{errors.name}</p>
-                                    )}
+                                    {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="nip">NIP</Label>
+                                    <Input
+                                        id="nip"
+                                        value={data.nip}
+                                        onChange={(e) => setData('nip', e.target.value)}
+                                        placeholder="Nomor Induk Pegawai"
+                                    />
+                                    {errors.nip && <p className="text-sm text-destructive">{errors.nip}</p>}
                                 </div>
 
                                 <div className="space-y-2">
@@ -101,9 +137,7 @@ export default function Edit({ teacher }: { teacher: Teacher }) {
                                         onChange={(e) => setData('email', e.target.value)}
                                         placeholder="nama@sekolah.com"
                                     />
-                                    {errors.email && (
-                                        <p className="text-sm text-destructive">{errors.email}</p>
-                                    )}
+                                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                                 </div>
 
                                 <div className="space-y-2">
@@ -115,75 +149,175 @@ export default function Edit({ teacher }: { teacher: Teacher }) {
                                         onChange={(e) => setData('password', e.target.value)}
                                         placeholder="Kosongkan jika tidak ingin mengubah"
                                     />
-                                    {errors.password && (
-                                        <p className="text-sm text-destructive">{errors.password}</p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="position">Jabatan</Label>
-                                    <Input
-                                        id="position"
-                                        value={data.position}
-                                        onChange={(e) => setData('position', e.target.value)}
-                                        placeholder="Guru, Kepala Sekolah, dll"
-                                    />
-                                    {errors.position && (
-                                        <p className="text-sm text-destructive">{errors.position}</p>
-                                    )}
-                                </div>
-
-
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="contact">Kontak</Label>
-                                    <Input
-                                        id="contact"
-                                        value={data.contact}
-                                        onChange={(e) => setData('contact', e.target.value)}
-                                        placeholder="Email atau nomor telepon"
-                                    />
-                                    {errors.contact && (
-                                        <p className="text-sm text-destructive">{errors.contact}</p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="order">Urutan Tampilan</Label>
-                                    <Input
-                                        id="order"
-                                        type="number"
-                                        value={data.order}
-                                        onChange={(e) => setData('order', parseInt(e.target.value) || 0)}
-                                        placeholder="0"
-                                    />
-                                    {errors.order && (
-                                        <p className="text-sm text-destructive">{errors.order}</p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2 md:col-span-2">
-                                    <ImageUpload
-                                        label="Foto Guru"
-                                        value={teacher.photo}
-                                        onChange={(file) => setData('photo', file)}
-                                        error={errors.photo}
-                                    />
-                                </div>
-
-                                <div className="flex items-center space-x-2 md:col-span-2">
-                                    <Switch
-                                        id="is_active"
-                                        checked={data.is_active}
-                                        onCheckedChange={(checked) => setData('is_active', checked)}
-                                    />
-                                    <Label htmlFor="is_active" className="cursor-pointer">
-                                        Aktif (tampilkan di website)
-                                    </Label>
+                                    {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
+
+                    {showFullForm && (
+                        <>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Data Kepegawaian & Pribadi</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="nuptk">NUPTK</Label>
+                                            <Input
+                                                id="nuptk"
+                                                value={data.nuptk}
+                                                onChange={(e) => setData('nuptk', e.target.value)}
+                                                placeholder="NUPTK"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="position">Jabatan</Label>
+                                            <Input
+                                                id="position"
+                                                value={data.position}
+                                                onChange={(e) => setData('position', e.target.value)}
+                                                placeholder="Guru, Kepala Sekolah, dll"
+                                            />
+                                            {errors.position && <p className="text-sm text-destructive">{errors.position}</p>}
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="gender">Jenis Kelamin</Label>
+                                            <Select value={data.gender} onValueChange={(val) => setData('gender', val)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Pilih" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="L">Laki-laki</SelectItem>
+                                                    <SelectItem value="P">Perempuan</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="place_of_birth">Tempat Lahir</Label>
+                                            <Input
+                                                id="place_of_birth"
+                                                value={data.place_of_birth}
+                                                onChange={(e) => setData('place_of_birth', e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="date_of_birth">Tanggal Lahir</Label>
+                                            <Input
+                                                id="date_of_birth"
+                                                type="date"
+                                                value={data.date_of_birth}
+                                                onChange={(e) => setData('date_of_birth', e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="contact">No. HP / Kontak</Label>
+                                            <Input
+                                                id="contact"
+                                                value={data.contact}
+                                                onChange={(e) => setData('contact', e.target.value)}
+                                            />
+                                            {errors.contact && <p className="text-sm text-destructive">{errors.contact}</p>}
+                                        </div>
+
+                                        <div className="space-y-2 md:col-span-2">
+                                            <Label htmlFor="address">Alamat</Label>
+                                            <Textarea
+                                                id="address"
+                                                value={data.address}
+                                                onChange={(e) => setData('address', e.target.value)}
+                                                rows={3}
+                                            />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Pendidikan Terakhir</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="last_education">Pendidikan</Label>
+                                            <Select value={data.last_education} onValueChange={(val) => setData('last_education', val)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Pilih jenjang" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="SMA/SMK">SMA/SMK</SelectItem>
+                                                    <SelectItem value="D3">D3</SelectItem>
+                                                    <SelectItem value="S1">S1</SelectItem>
+                                                    <SelectItem value="S2">S2</SelectItem>
+                                                    <SelectItem value="S3">S3</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="education_major">Jurusan</Label>
+                                            <Input
+                                                id="education_major"
+                                                value={data.education_major}
+                                                onChange={(e) => setData('education_major', e.target.value)}
+                                                placeholder="Contoh: Pendidikan Matematika"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2 md:col-span-2">
+                                            <Label htmlFor="university">Kampus / Universitas</Label>
+                                            <Input
+                                                id="university"
+                                                value={data.university}
+                                                onChange={(e) => setData('university', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Lainnya</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="order">Urutan Tampilan</Label>
+                                        <Input
+                                            id="order"
+                                            type="number"
+                                            value={data.order}
+                                            onChange={(e) => setData('order', parseInt(e.target.value) || 0)}
+                                        />
+                                        {errors.order && <p className="text-sm text-destructive">{errors.order}</p>}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <ImageUpload
+                                            label="Foto Guru"
+                                            value={teacher.photo}
+                                            onChange={(file) => setData('photo', file)}
+                                            error={errors.photo}
+                                        />
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <Switch
+                                            id="is_active"
+                                            checked={data.is_active}
+                                            onCheckedChange={(checked) => setData('is_active', checked)}
+                                        />
+                                        <Label htmlFor="is_active">Aktif</Label>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
 
                     <div className="flex justify-end gap-4">
                         <Button type="button" variant="outline" asChild>

@@ -156,9 +156,10 @@ export default function Print({
                 .print-container {
                     max-width: 21cm;
                     margin: 0 auto;
-                    background: white;
+                    background: transparent;
                     color: #000;
                     position: relative;
+                    z-index: 10;
                 }
                 
                 .watermark {
@@ -166,8 +167,8 @@ export default function Print({
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    opacity: 0.08;
-                    z-index: -1;
+                    opacity: 0.1 !important;
+                    z-index: 9999;
                     width: 400px;
                     height: 400px;
                     pointer-events: none;
@@ -177,6 +178,16 @@ export default function Print({
                     width: 100%;
                     height: 100%;
                     object-fit: contain;
+                }
+
+                @media print {
+                   .watermark {
+                        position: absolute; /* Fix for some browsers blocking fixed in print */
+                        display: block !important;
+                        opacity: 0.1 !important;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                   }
                 }
                 
                 .header {
