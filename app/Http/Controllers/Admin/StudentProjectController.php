@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class StudentProjectController extends Controller
 {
@@ -13,7 +14,7 @@ class StudentProjectController extends Controller
     public function index()
     {
         $projects = \App\Models\StudentProject::with('major')->latest()->get();
-        return \Inertia\Inertia::render('Admin/StudentProjects/Index', [
+        return Inertia::render('Admin/StudentProjects/Index', [
             'projects' => $projects
         ]);
     }
@@ -28,7 +29,7 @@ class StudentProjectController extends Controller
             ->select('students.id', 'users.name')
             ->orderBy('users.name')
             ->get();
-        return \Inertia\Inertia::render('Admin/StudentProjects/Form', [
+        return Inertia::render('Admin/StudentProjects/Form', [
             'majors' => $majors,
             'students' => $students
         ]);
@@ -37,7 +38,7 @@ class StudentProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(\Illuminate\Http\Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'major_id' => 'required|exists:majors,id',
@@ -78,7 +79,7 @@ class StudentProjectController extends Controller
             ->select('students.id', 'users.name')
             ->orderBy('users.name')
             ->get();
-        return \Inertia\Inertia::render('Admin/StudentProjects/Form', [
+        return Inertia::render('Admin/StudentProjects/Form', [
             'project' => $studentProject,
             'majors' => $majors,
             'students' => $students
@@ -88,7 +89,7 @@ class StudentProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(\Illuminate\Http\Request $request, \App\Models\StudentProject $studentProject)
+    public function update(Request $request, \App\Models\StudentProject $studentProject)
     {
         $validated = $request->validate([
             'major_id' => 'required|exists:majors,id',

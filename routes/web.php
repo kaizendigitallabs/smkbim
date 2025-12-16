@@ -266,7 +266,7 @@ Route::middleware(['auth'])->prefix('teacher')->name('teacher.')->group(function
 
     // Teacher Attendance (Placeholder)
     Route::get('/attendance-teacher', function () {
-        return \Inertia\Inertia::render('Teacher/Attendance/Index');
+        return Inertia::render('Teacher/Attendance/Index');
     })->name('attendance-teacher');
 
 });
