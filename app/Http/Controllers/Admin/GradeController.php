@@ -244,7 +244,6 @@ class GradeController extends Controller
     {
         $request->validate([
             'file' => 'required|mimes:xlsx,xls',
-            'type' => 'required|in:daily,daily_exam,midterm,final',
         ]);
         
         $settings = ReportCardSetting::first();
@@ -254,7 +253,6 @@ class GradeController extends Controller
         try {
             Excel::import(new \App\Imports\ClassAllSubjectsGradeImport(
                 $classId, 
-                $request->type, 
                 $semester, 
                 $academicYear
             ), $request->file('file'));

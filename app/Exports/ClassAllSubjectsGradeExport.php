@@ -2,67 +2,43 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Models\SchoolClass;
 use App\Models\Subject;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ClassAllSubjectsGradeExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class ClassAllSubjectsGradeExport implements WithMultipleSheets
 {
     protected $classId;
-    protected $subjects;
 
     public function __construct($classId)
     {
         $this->classId = $classId;
-        // Get all subjects (or active ones for this class level?)
-        // For simplicity, let's get all subjects. Or filtering by assignments would be safer.
-        // Let's use subjects that have assignments for this class.
-        $this->subjects = Subject::whereHas('assignments', function ($q) {
-            $q->where('class_id', $this->classId);
-        })->orWhereHas('assignments', function($q) {
-            $q->whereNull('class_id'); // Global assignments
-        })->orderBy('name')->get();
     }
 
-    public function collection()
+    public function sheets(): array
     {
         $schoolClass = SchoolClass::findOrFail($this->classId);
-        return $schoolClass->students()->orderBy('nis')->get();
-    }
+        $settings = \App\Models\ReportCardSetting::first();
+        $academicYear = $settings->academic_year ?? date('Y') . '/' . (date('Y') + 1);
 
-    public function headings(): array
-    {
-        $headers = ['NIS', 'Nama Siswa'];
-        foreach ($this->subjects as $subject) {
-            $headers[] = $subject->name;
-        }
-        return $headers;
-    }
+        $subjects = Subject::whereHas('assignments', function ($q) use ($academicYear) {
+            $q->where('class_id', $this->classId)
+              ->where('academic_year', $academicYear);
+        })->orWhereHas('assignments', function($q) use ($academicYear) {
+            $q->whereNull('class_id')
+              ->where('academic_year', $academicYear);
+        })->orderBy('name')->get();
 
-    public function map($student): array
-    {
-        $row = [
-            $student->nis,
-            $student->user->name ?? $student->name,
-        ];
+        $students = $schoolClass->students()->orderBy('nis')->get();
 
-        // Empty cells for grades
-        foreach ($this->subjects as $subject) {
-            $row[] = '';
+        $sheets = [];
+
+        foreach ($subjects as $subject) {
+            // Excel sheet names max 31 chars
+            $sheetTitle = substr($subject->name, 0, 31);
+            $sheets[] = new GradeTemplateExport($students, $sheetTitle);
         }
 
-        return $row;
-    }
-
-    public function styles(Worksheet $sheet)
-    {
-        return [
-            1 => ['font' => ['bold' => true]],
-        ];
+        return $sheets;
     }
 }

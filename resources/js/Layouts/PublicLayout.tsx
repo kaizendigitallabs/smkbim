@@ -71,11 +71,19 @@ export default function PublicLayout({ children }: Props) {
                                         PPDB
                                     </Button>
                                 </Link>
-                                <Link href="/portal">
-                                    <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white px-6 font-bold shadow-sm transition-all bg-white dark:bg-slate-950 dark:border-primary dark:text-primary">
-                                        Login Portal
-                                    </Button>
-                                </Link>
+                                {props.auth?.user ? (
+                                    <Link href={route('dashboard')}>
+                                        <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white px-6 font-bold shadow-sm transition-all bg-white dark:bg-slate-950 dark:border-primary dark:text-primary">
+                                            Dashboard
+                                        </Button>
+                                    </Link>
+                                ) : (
+                                    <Link href="/portal">
+                                        <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary hover:text-white px-6 font-bold shadow-sm transition-all bg-white dark:bg-slate-950 dark:border-primary dark:text-primary">
+                                            Login Portal
+                                        </Button>
+                                    </Link>
+                                )}
                                 <ModeToggle />
                             </div>
                         </div>
@@ -131,9 +139,15 @@ export default function PublicLayout({ children }: Props) {
                                     <Link href="/ppdb" className="block w-full">
                                         <Button className="w-full bg-primary text-white shadow-sm">PPDB</Button>
                                     </Link>
-                                    <Link href="/portal" className="block w-full">
-                                        <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white dark:border-primary dark:text-primary">Portal</Button>
-                                    </Link>
+                                    {props.auth?.user ? (
+                                        <Link href={route('dashboard')} className="block w-full">
+                                            <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white dark:border-primary dark:text-primary">Dashboard</Button>
+                                        </Link>
+                                    ) : (
+                                        <Link href="/portal" className="block w-full">
+                                            <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white dark:border-primary dark:text-primary">Portal</Button>
+                                        </Link>
+                                    )}
                                 </div>
                             </div>
                         </div>

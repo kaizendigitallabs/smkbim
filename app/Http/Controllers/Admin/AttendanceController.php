@@ -63,6 +63,14 @@ class AttendanceController extends Controller
                 return $dateAttendances->keyBy('student_id');
             });
             
+        // Get Attendance Recaps (Monthly Totals) - SAME AS TEACHER CONTROLLER
+        $attendanceRecaps = \App\Models\AttendanceRecap::where('class_id', $classId)
+            ->where('semester', $currentSemester)
+            ->where('academic_year', $currentAcademicYear)
+            ->get()
+            ->groupBy('month')
+            ->toArray();
+
         // Mock assignment object to satisfy the frontend interface
         $assignment = (object)[
             'class_id' => $schoolClass->id,
@@ -73,6 +81,7 @@ class AttendanceController extends Controller
             'assignment' => $assignment,
             'students' => $students,
             'attendances' => $attendances,
+            'attendanceRecaps' => $attendanceRecaps,
             'currentSemester' => $currentSemester,
             'currentAcademicYear' => $currentAcademicYear,
             'semesterStartDate' => $semesterStartDate,

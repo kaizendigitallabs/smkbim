@@ -63,10 +63,12 @@ export default function MyClass({
     semesterEndDate,
     submitRoute = 'teacher.attendance.bulk-store-recap',
     backRoute,
+    attendanceRecaps = {},
 }: {
     assignment: Assignment | null;
     students: Student[];
     attendances: Record<string, Record<number, any>>;
+    attendanceRecaps?: Record<string, AttendanceRecap[]>;
     currentSemester: string;
     currentAcademicYear: string;
     semesterStartDate: string | null;
@@ -121,40 +123,50 @@ export default function MyClass({
     useEffect(() => {
         if (!selectedMonth) return;
         
-        // Calculate total days in selected month
-        const [year, month] = selectedMonth.split('-').map(Number);
-        const daysInMonth = new Date(year, month, 0).getDate();
+        // 1. Check if we have SAVED recap data for this month
+        const savedRecaps = attendanceRecaps[selectedMonth] || [];
         
-        // Count attendance from daily records
         const newRecap: Record<number, any> = {};
+        
         students.forEach((student) => {
-            const counts = {
-                present: 0,
-                sick: 0,
-                permission: 0,
-                absent: 0,
-            };
+            // Find saved recap for this student
+            const saved = savedRecaps.find((r: any) => r.student_id === student.id);
             
-            // Count from daily attendance records
-            Object.entries(attendances).forEach(([date, dateAttendances]) => {
-                if (date.startsWith(selectedMonth)) {
-                    const att = dateAttendances[student.id];
-                    if (att) {
-                        counts[att.status as keyof typeof counts]++;
+            if (saved) {
+                // Use saved data
+                newRecap[student.id] = {
+                    present: saved.present.toString(),
+                    sick: saved.sick.toString(),
+                    permission: saved.permission.toString(),
+                    absent: saved.absent.toString(),
+                };
+            } else {
+                 // Fallback: Default to 0 (or calculate from daily if needed, but Manual Input usually overrides)
+                 // Keeping it simple: if no saved recap, start at 0.
+                 // Calculating from daily logs might be confusing if they haven't filled daily logs.
+                 // If you really want daily logs as fallback:
+                 /*
+                 const counts = { present: 0, sick: 0, permission: 0, absent: 0 };
+                 Object.entries(attendances).forEach(([date, dateAttendances]) => {
+                    if (date.startsWith(selectedMonth)) {
+                        const att = dateAttendances[student.id];
+                        if (att) counts[att.status as keyof typeof counts]++;
                     }
-                }
-            });
-            
-            newRecap[student.id] = {
-                present: counts.present.toString(),
-                sick: counts.sick.toString(),
-                permission: counts.permission.toString(),
-                absent: counts.absent.toString(),
-            };
+                 });
+                 // use counts...
+                 */
+
+                newRecap[student.id] = {
+                    present: '0',
+                    sick: '0',
+                    permission: '0',
+                    absent: '0',
+                };
+            }
         });
         
         setAttendanceRecap(newRecap);
-    }, [selectedMonth, students, attendances]);
+    }, [selectedMonth, students, attendanceRecaps]);
 
     const updateAttendance = (studentId: number, field: 'present' | 'sick' | 'permission' | 'absent', value: string) => {
         // Only allow numbers
@@ -247,20 +259,22 @@ export default function MyClass({
                             <CardDescription>Pilih bulan untuk input rekap absensi</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center gap-4">
-                                <Calendar className="h-5 w-5 text-muted-foreground" />
-                                <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                                    <SelectTrigger className="w-64">
-                                        <SelectValue placeholder="Pilih Bulan" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {semesterMonths.map((month) => (
-                                            <SelectItem key={month.value} value={month.value}>
-                                                {month.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-center gap-4">
+                                    <Calendar className="h-5 w-5 text-muted-foreground" />
+                                    <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                                        <SelectTrigger className="w-64">
+                                            <SelectValue placeholder="Pilih Bulan" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {semesterMonths.map((month) => (
+                                                <SelectItem key={month.value} value={month.value}>
+                                                    {month.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

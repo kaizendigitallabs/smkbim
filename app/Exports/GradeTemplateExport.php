@@ -6,16 +6,24 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class GradeTemplateExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
+class GradeTemplateExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithTitle
 {
     protected $students;
+    protected $title;
 
-    public function __construct($students)
+    public function __construct($students, $title = 'Template')
     {
         $this->students = $students;
+        $this->title = $title;
+    }
+
+    public function title(): string
+    {
+        return $this->title;
     }
 
     public function collection()

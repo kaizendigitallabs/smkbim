@@ -62,7 +62,6 @@ export default function Show({
     
     const { data, setData, post, processing, errors, reset, clearErrors } = useInertiaForm({
         file: null as File | null,
-        type: 'daily',
     });
 
     const handleImport = (e: React.FormEvent) => {
@@ -187,24 +186,9 @@ export default function Show({
                     </div>
 
                     <form onSubmit={handleImport} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label>Jenis Nilai</Label>
-                            <Select 
-                                value={data.type} 
-                                onValueChange={(val) => setData('type', val)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih jenis nilai" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="daily">Nilai Harian</SelectItem>
-                                    <SelectItem value="daily_exam">Ulangan Harian</SelectItem>
-                                    <SelectItem value="midterm">UTS</SelectItem>
-                                    <SelectItem value="final">UAS</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            {errors.type && <p className="text-sm text-destructive">{errors.type}</p>}
-                        </div>
+                         <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-sm text-blue-700 mb-2">
+                             <strong>Catatan:</strong> File template kini memiliki sheet/halaman terpisah untuk setiap jenis nilai (Harian, UTS, UAS). Silakan isi sesuai sheet yang tersedia.
+                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="file">File Excel</Label>
@@ -230,4 +214,5 @@ export default function Show({
             </Dialog>
         </AppLayout>
     );
+
 }

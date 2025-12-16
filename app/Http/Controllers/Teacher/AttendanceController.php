@@ -63,7 +63,7 @@ class AttendanceController extends Controller
             $semesterEndDate = $endYear . '-06-30';
         }
         
-        // Get all attendances for this semester
+        // Get all attendances for this semester (Daily Logs)
         $attendances = Attendance::where('class_id', $assignment->class_id)
             ->whereBetween('date', [$semesterStartDate, $semesterEndDate])
             ->get()
@@ -71,11 +71,20 @@ class AttendanceController extends Controller
             ->map(function ($dateAttendances) {
                 return $dateAttendances->keyBy('student_id');
             });
+            
+        // Get Attendance Recaps (Monthly Totals)
+        $attendanceRecaps = \App\Models\AttendanceRecap::where('class_id', $assignment->class_id)
+            ->where('semester', $currentSemester)
+            ->where('academic_year', $currentAcademicYear)
+            ->get()
+            ->groupBy('month')
+            ->toArray(); // Force conversion to array
         
         return Inertia::render('Teacher/Attendance/MyClass', [
             'assignment' => $assignment,
             'students' => $students,
             'attendances' => $attendances,
+            'attendanceRecaps' => $attendanceRecaps,
             'currentSemester' => $currentSemester,
             'currentAcademicYear' => $currentAcademicYear,
             'semesterStartDate' => $semesterStartDate,
