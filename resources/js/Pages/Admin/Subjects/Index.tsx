@@ -3,8 +3,8 @@ import { Head, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { Pencil, Trash2, Plus } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Pencil, Trash2, Plus, Upload, FileSpreadsheet, Download } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,6 +23,7 @@ interface Subject {
 
 export default function Index({ subjects }: { subjects: Subject[] }) {
     const [open, setOpen] = useState(false);
+    const [importOpen, setImportOpen] = useState(false);
     const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
     const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; item: Subject | null }>({
         open: false,
@@ -35,6 +36,10 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
         description: '',
         subject_group: 'A',
         display_order: 0,
+    });
+
+    const { data: importData, setData: setImportData, post: postImport, processing: importProcessing, errors: importErrors, reset: resetImport } = useForm({
+        file: null as File | null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -55,6 +60,20 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
                 },
             });
         }
+    };
+
+    const handleImport = (e: React.FormEvent) => {
+        e.preventDefault();
+        postImport(route('api.admin.subjects.import'), {
+            onSuccess: () => {
+                setImportOpen(false);
+                resetImport();
+            },
+        });
+    };
+
+    const handleDownloadTemplate = () => {
+         window.location.href = route('api.admin.subjects.template');
     };
 
     const handleEdit = (item: Subject) => {
@@ -142,13 +161,70 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
                             Kelola data mata pelajaran
                         </p>
                     </div>
-                    <Dialog open={open} onOpenChange={(val) => {
-                        setOpen(val);
-                        if (!val) {
-                            setEditingSubject(null);
-                            reset();
-                        }
-                    }}>
+                    <div className="flex gap-2">
+                        <Dialog open={importOpen} onOpenChange={(val) => {
+                            setImportOpen(val);
+                            if (!val) resetImport();
+                        }}>
+                             <DialogTrigger asChild>
+                                <Button variant="outline">
+                                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                                    Import Excel
+                                </Button>
+                             </DialogTrigger>
+                             <DialogContent>
+                                 <DialogHeader>
+                                     <DialogTitle>Import Data Mata Pelajaran</DialogTitle>
+                                     <DialogDescription>
+                                         Upload file Excel (.xlsx) untuk import data mapel sekaligus.
+                                     </DialogDescription>
+                                 </DialogHeader>
+                                 <form onSubmit={handleImport}>
+                                     <div className="grid w-full items-center gap-1.5 py-4">
+                                         <Label htmlFor="file">File Excel</Label>
+                                         <Input
+                                             id="file"
+                                             type="file"
+                                             accept=".xlsx,.xls"
+                                             onChange={(e) => {
+                                                  if (e.target.files) {
+                                                      setImportData('file', e.target.files[0]);
+                                                  }
+                                             }}
+                                         />
+                                         {importErrors.file && <p className="text-sm text-red-500">{importErrors.file}</p>}
+                                     </div>
+                                     <div className="text-sm text-muted-foreground">
+                                         <p>Format kolom Excel:</p>
+                                         <ul className="list-disc list-inside mt-1">
+                                             <li>nama_mapel (Wajib)</li>
+                                             <li>kode_mapel (Wajib, Unik)</li>
+                                             <li>kelompok (A, B, atau C)</li>
+                                             <li>urutan (Angka)</li>
+                                             <li>deskripsi (Opsional)</li>
+                                         </ul>
+                                     </div>
+                                     <div className="flex justify-between items-center pt-4">
+                                         <Button type="button" variant="outline" onClick={handleDownloadTemplate} size="sm">
+                                             <Download className="mr-2 h-4 w-4" />
+                                             Download Template
+                                         </Button>
+                                         <Button type="submit" disabled={importProcessing}>
+                                             <Upload className="mr-2 h-4 w-4" />
+                                             Import Data
+                                         </Button>
+                                     </div>
+                                 </form>
+                             </DialogContent>
+                        </Dialog>
+
+                        <Dialog open={open} onOpenChange={(val) => {
+                            setOpen(val);
+                            if (!val) {
+                                setEditingSubject(null);
+                                reset();
+                            }
+                        }}>
                         <DialogTrigger asChild>
                             <Button>
                                 <Plus className="mr-2 h-4 w-4" />
@@ -230,6 +306,7 @@ export default function Index({ subjects }: { subjects: Subject[] }) {
                             </form>
                         </DialogContent>
                     </Dialog>
+                    </div>
                 </div>
 
                 <DataTable columns={columns} data={subjects} searchColumn="name" />

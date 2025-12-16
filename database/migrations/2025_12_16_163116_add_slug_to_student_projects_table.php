@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ppdb_settings', function (Blueprint $table) {
-            $table->uuid("id")->primary();
-            $table->string('key')->unique();
-            $table->text('value')->nullable();
-            $table->timestamps();
+        Schema::table('student_projects', function (Blueprint $table) {
+            $table->string('slug')->after('title')->nullable();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ppdb_settings');
+        Schema::table('student_projects', function (Blueprint $table) {
+            $table->dropColumn('slug');
+        });
     }
 };

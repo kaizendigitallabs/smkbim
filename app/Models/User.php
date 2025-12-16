@@ -10,10 +10,12 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, \Spatie\Permission\Traits\HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, \Spatie\Permission\Traits\HasRoles, HasUuids;
 
     /**
      * The attributes that are mass assignable.

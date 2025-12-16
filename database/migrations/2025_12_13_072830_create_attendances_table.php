@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attendances', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
+            $table->uuid("id")->primary();
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('class_id')->constrained('classes')->onDelete('cascade');
             $table->date('date');
             $table->enum('status', ['present', 'sick', 'permission', 'absent']); // Hadir, Sakit, Izin, Alpha
             $table->text('notes')->nullable();
-            $table->foreignId('recorded_by')->constrained('users'); // Wali kelas
+            $table->foreignUuid('recorded_by')->constrained('users'); // Wali kelas
             $table->timestamps();
             
             $table->unique(['student_id', 'date']);

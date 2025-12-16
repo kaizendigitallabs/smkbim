@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('classes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid("id")->primary();
             $table->string('name'); // e.g., "X RPL 1"
             $table->string('level'); // e.g., "X", "XI", "XII"
             $table->string('academic_year'); // e.g., "2024/2025"
-            $table->foreignId('homeroom_teacher_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignUuid('homeroom_teacher_id')->nullable()->constrained('users')->nullOnDelete();
             $table->text('description')->nullable();
             $table->timestamps();
         });

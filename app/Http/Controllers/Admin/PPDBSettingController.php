@@ -41,7 +41,7 @@ class PPDBSettingController extends Controller
             );
         }
 
-        return redirect()->route('admin.ppdb.settings')
+        return redirect()->route('admin.ppdb.settings.index')
             ->with('success', 'Pengaturan PPDB berhasil diperbarui.');
     }
 }

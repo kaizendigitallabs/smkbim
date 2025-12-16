@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('teachers', function (Blueprint $table) {
-            $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
+        Schema::table('school_profiles', function (Blueprint $table) {
+            $table->string('accreditation_grade')->nullable()->after('whatsapp'); // e.g. "A"
+            $table->string('accreditation_label')->nullable()->after('accreditation_grade'); // e.g. "Unggul"
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('teachers', function (Blueprint $table) {
+        Schema::table('school_profiles', function (Blueprint $table) {
             //
         });
     }

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('homeroom_teacher_notes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
+            $table->uuid("id")->primary();
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('teacher_id')->constrained('users')->onDelete('cascade');
             $table->text('notes');
             $table->string('semester');
             $table->string('academic_year');

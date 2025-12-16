@@ -43,7 +43,8 @@ export default function Home({
     ppdbIsOpen, 
     majors, 
     schoolPrograms,
-    testimonials 
+    testimonials,
+    homeSettings
 }: HomeProps) {
     // Merge activities and achievements
     const allActivities = [...activities, ...achievements].sort((a, b) => 
@@ -66,29 +67,35 @@ export default function Home({
                         {/* Left: Text Content */}
                         <div className="space-y-6">
                             <Badge className="bg-[#21AD00]/10 text-[#21AD00] border-[#21AD00]/20 font-semibold">
-                                Sekolah Pusat Keunggulan
+                                {homeSettings?.hero_subtitle || 'Sekolah Pusat Keunggulan'}
                             </Badge>
                             <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-gray-900 dark:text-gray-50">
-                                SMK Bina Insan Mulia – <span className="text-[#21AD00]">Mempersiapkan Generasi</span> Siap Kerja dan Berakhlak
+                                {homeSettings?.hero_title || <>SMK Bina Insan Mulia – <span className="text-[#21AD00]">Mempersiapkan Generasi</span> Siap Kerja dan Berakhlak</>}
                             </h1>
                             <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
-                                Sekolah kejuruan yang fokus membekali siswa dengan keterampilan praktis, karakter kuat, 
-                                dan kesiapan menghadapi dunia industri maupun perguruan tinggi.
+                                {homeSettings?.hero_description || 'Sekolah kejuruan yang fokus membekali siswa dengan keterampilan praktis, karakter kuat, dan kesiapan menghadapi dunia industri maupun perguruan tinggi.'}
                             </p>
                             
+                            {/* Bullet Points */}
                             {/* Bullet Points */}
                             <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
                                     <CheckCircle2 className="w-6 h-6 text-[#21AD00] flex-shrink-0 mt-0.5" />
-                                    <span className="text-gray-700 dark:text-gray-300 font-medium">Kurikulum selaras dengan kebutuhan industri</span>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">
+                                        {homeSettings?.hero_feature_1 || 'Kurikulum selaras dengan kebutuhan industri'}
+                                    </span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <CheckCircle2 className="w-6 h-6 text-[#21AD00] flex-shrink-0 mt-0.5" />
-                                    <span className="text-gray-700 dark:text-gray-300 font-medium">Pembinaan karakter dan keagamaan yang intensif</span>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">
+                                        {homeSettings?.hero_feature_2 || 'Pembinaan karakter dan keagamaan yang intensif'}
+                                    </span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <CheckCircle2 className="w-6 h-6 text-[#21AD00] flex-shrink-0 mt-0.5" />
-                                    <span className="text-gray-700 dark:text-gray-300 font-medium">Pendampingan karir dan studi lanjut</span>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">
+                                        {homeSettings?.hero_feature_3 || 'Pendampingan karir dan studi lanjut'}
+                                    </span>
                                 </li>
                             </ul>
 
@@ -153,7 +160,9 @@ export default function Home({
                                         </div>
                                         <div>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Akreditasi</p>
-                                            <p className="text-lg font-bold text-gray-900 dark:text-gray-50">A (Unggul)</p>
+                                            <p className="text-lg font-bold text-gray-900 dark:text-gray-50">
+                                                {schoolProfile?.accreditation_grade || 'A'} ({schoolProfile?.accreditation_label || 'Unggul'})
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -193,18 +202,18 @@ export default function Home({
                                     </p>
                                     <div className="flex items-center gap-4 pt-4">
                                         <div className="text-center">
-                                            <p className="text-4xl font-bold text-[#21AD00]">500+</p>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">Siswa Aktif</p>
+                                            <p className="text-4xl font-bold text-[#21AD00]">{homeSettings?.metric_1_value || '500+'}</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">{homeSettings?.metric_1_label || 'Siswa Aktif'}</p>
                                         </div>
                                         <div className="h-12 w-px bg-gray-200"></div>
                                         <div className="text-center">
-                                            <p className="text-4xl font-bold text-[#E7974D]">95%</p>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">Tingkat Kelulusan</p>
+                                            <p className="text-4xl font-bold text-[#E7974D]">{homeSettings?.metric_2_value || '95%'}</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">{homeSettings?.metric_2_label || 'Tingkat Kelulusan'}</p>
                                         </div>
                                         <div className="h-12 w-px bg-gray-200"></div>
                                         <div className="text-center">
-                                            <p className="text-4xl font-bold text-[#21AD00]">15+</p>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">Ekstrakurikuler</p>
+                                            <p className="text-4xl font-bold text-[#21AD00]">{homeSettings?.metric_3_value || '15+'}</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">{homeSettings?.metric_3_label || 'Ekstrakurikuler'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -218,9 +227,11 @@ export default function Home({
                                             <Heart className="w-7 h-7 text-[#21AD00] group-hover:text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">Fokus Pembinaan Karakter</h3>
+                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">
+                                                {homeSettings?.feature_1_title || 'Fokus Pembinaan Karakter'}
+                                            </h3>
                                             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                                Pembiasaan ibadah, kedisiplinan, dan budaya saling menghargai menjadi bagian dari keseharian di sekolah.
+                                                {homeSettings?.feature_1_description || 'Pembiasaan ibadah, kedisiplinan, dan budaya saling menghargai menjadi bagian dari keseharian di sekolah.'}
                                             </p>
                                         </div>
                                     </CardContent>
@@ -232,9 +243,11 @@ export default function Home({
                                             <Target className="w-7 h-7 text-[#E7974D] group-hover:text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">Lingkungan Belajar Nyaman</h3>
+                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">
+                                                {homeSettings?.feature_2_title || 'Lingkungan Belajar Nyaman'}
+                                            </h3>
                                             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                                Ruang kelas, laboratorium, serta fasilitas pendukung dirancang untuk mendukung proses belajar yang optimal.
+                                                {homeSettings?.feature_2_description || 'Ruang kelas, laboratorium, serta fasilitas pendukung dirancang untuk mendukung proses belajar yang optimal.'}
                                             </p>
                                         </div>
                                     </CardContent>
@@ -246,9 +259,11 @@ export default function Home({
                                             <TrendingUp className="w-7 h-7 text-[#21AD00] group-hover:text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">Pendampingan Karir & Studi Lanjut</h3>
+                                            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-50">
+                                                {homeSettings?.feature_3_title || 'Pendampingan Karir & Studi Lanjut'}
+                                            </h3>
                                             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                                Siswa dibimbing untuk memilih jalur terbaik: langsung bekerja, berwirausaha, atau melanjutkan pendidikan.
+                                                {homeSettings?.feature_3_description || 'Siswa dibimbing untuk memilih jalur terbaik: langsung bekerja, berwirausaha, atau melanjutkan pendidikan.'}
                                             </p>
                                         </div>
                                     </CardContent>

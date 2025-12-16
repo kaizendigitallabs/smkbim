@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attendance_recaps', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
+            $table->uuid("id")->primary();
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('class_id')->constrained('classes')->onDelete('cascade');
             $table->string('month', 7); // Format: YYYY-MM
             $table->string('semester', 10); // Ganjil/Genap
             $table->string('academic_year', 10); // e.g., 2024/2025
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('sick')->default(0);
             $table->integer('permission')->default(0);
             $table->integer('absent')->default(0);
-            $table->foreignId('recorded_by')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('recorded_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
             
             // Unique constraint: one recap per student per month

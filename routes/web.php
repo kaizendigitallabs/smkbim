@@ -206,6 +206,8 @@ Route::prefix('api/admin')->middleware(['auth'])->group(function () {
 
     // Master Data (Classes & Subjects)
     Route::apiResource('/classes', App\Http\Controllers\Admin\ClassController::class)->names('api.admin.classes');
+    Route::get('/subjects/template', [App\Http\Controllers\Admin\SubjectController::class, 'template'])->name('api.admin.subjects.template');
+    Route::post('/subjects/import', [App\Http\Controllers\Admin\SubjectController::class, 'import'])->name('api.admin.subjects.import');
     Route::apiResource('/subjects', App\Http\Controllers\Admin\SubjectController::class)->names('api.admin.subjects');
 
     // Assignment Management

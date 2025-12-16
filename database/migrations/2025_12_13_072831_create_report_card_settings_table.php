@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('report_card_settings', function (Blueprint $table) {
-            $table->id();
+            $table->uuid("id")->primary();
             $table->string('headmaster_name');
             $table->string('headmaster_nip')->nullable();
             $table->string('school_address');

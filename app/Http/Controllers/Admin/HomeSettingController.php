@@ -62,6 +62,26 @@ class HomeSettingController extends Controller
             'cta_primary_btn_url' => 'nullable|string',
             'cta_secondary_btn_text' => 'nullable|string',
             'cta_secondary_btn_url' => 'nullable|string',
+
+            // Hero Bullets
+            'hero_feature_1' => 'nullable|string',
+            'hero_feature_2' => 'nullable|string',
+            'hero_feature_3' => 'nullable|string',
+            // Metrics
+            'metric_1_label' => 'nullable|string',
+            'metric_1_value' => 'nullable|string',
+            'metric_2_label' => 'nullable|string',
+            'metric_2_value' => 'nullable|string',
+            'metric_3_label' => 'nullable|string',
+            'metric_3_value' => 'nullable|string',
+            // Feature Cards
+            'feature_1_title' => 'nullable|string',
+            'feature_1_description' => 'nullable|string',
+            'feature_2_title' => 'nullable|string',
+            'feature_2_description' => 'nullable|string',
+            'feature_3_title' => 'nullable|string',
+            'feature_3_description' => 'nullable|string',
+
         ]);
 
         if ($request->hasFile('hero_image')) {

@@ -57,6 +57,10 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
             ],
             'siteSetting' => \App\Models\SiteSetting::first(),
+            'ppdbSetting' => [
+                'is_open' => filter_var(\App\Models\PPDBSetting::where('key', 'is_open')->value('value'), FILTER_VALIDATE_BOOLEAN),
+                'contact_info' => \App\Models\PPDBSetting::where('key', 'contact_info')->value('value'),
+            ],
         ];
     }
 }

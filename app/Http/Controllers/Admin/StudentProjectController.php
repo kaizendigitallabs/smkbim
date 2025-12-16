@@ -24,8 +24,13 @@ class StudentProjectController extends Controller
     public function create()
     {
         $majors = \App\Models\Major::all();
+        $students = \App\Models\Student::join('users', 'students.user_id', '=', 'users.id')
+            ->select('students.id', 'users.name')
+            ->orderBy('users.name')
+            ->get();
         return \Inertia\Inertia::render('Admin/StudentProjects/Form', [
-            'majors' => $majors
+            'majors' => $majors,
+            'students' => $students
         ]);
     }
 
@@ -69,9 +74,14 @@ class StudentProjectController extends Controller
     public function edit(\App\Models\StudentProject $studentProject)
     {
         $majors = \App\Models\Major::all();
+        $students = \App\Models\Student::join('users', 'students.user_id', '=', 'users.id')
+            ->select('students.id', 'users.name')
+            ->orderBy('users.name')
+            ->get();
         return \Inertia\Inertia::render('Admin/StudentProjects/Form', [
             'project' => $studentProject,
-            'majors' => $majors
+            'majors' => $majors,
+            'students' => $students
         ]);
     }
 

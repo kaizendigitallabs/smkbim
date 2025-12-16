@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('student_projects', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('major_id')->constrained()->onDelete('cascade');
+            $table->uuid("id")->primary();
+            $table->foreignUuid('major_id')->constrained()->onDelete('cascade');
             $table->string('student_name');
             $table->string('title');
             $table->text('description')->nullable();

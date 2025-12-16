@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Subject;
 
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\SubjectsImport;
 
 class SubjectController extends Controller
 {
@@ -84,5 +86,39 @@ class SubjectController extends Controller
         $subject->delete();
         
         return redirect()->back()->with('success', 'Subject deleted successfully');
+    }
+
+    public function template()
+    {
+        if (!auth()->user()->can('manage_subjects')) {
+            abort(403);
+        }
+
+        return Excel::download(new \App\Exports\SubjectsTemplateExport, 'template_mapel.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        if (!auth()->user()->can('manage_subjects')) {
+             return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            Excel::import(new SubjectsImport, $request->file('file'));
+            return redirect()->back()->with('success', 'Data mapel berhasil diimport.');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+             $failures = $e->failures();
+             $messages = [];
+             foreach ($failures as $failure) {
+                 $messages[] = 'Baris ' . $failure->row() . ': ' . implode(', ', $failure->errors());
+             }
+             return redirect()->back()->withErrors(['file' => implode(' | ', $messages)]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['file' => 'Gagal import: ' . $e->getMessage()]);
+        }
     }
 }

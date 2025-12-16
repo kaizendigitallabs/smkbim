@@ -24,6 +24,24 @@ interface HomeSetting {
     cta_primary_btn_url?: string;
     cta_secondary_btn_text?: string;
     cta_secondary_btn_url?: string;
+    // Hero Bullets
+    hero_feature_1?: string;
+    hero_feature_2?: string;
+    hero_feature_3?: string;
+    // Metrics
+    metric_1_label?: string;
+    metric_1_value?: string;
+    metric_2_label?: string;
+    metric_2_value?: string;
+    metric_3_label?: string;
+    metric_3_value?: string;
+    // Features (Sekilas Info)
+    feature_1_title?: string;
+    feature_1_description?: string;
+    feature_2_title?: string;
+    feature_2_description?: string;
+    feature_3_title?: string;
+    feature_3_description?: string;
 }
 
 interface SchoolProgram {
@@ -54,6 +72,24 @@ export default function Index({
         cta_primary_btn_url: setting?.cta_primary_btn_url || '',
         cta_secondary_btn_text: setting?.cta_secondary_btn_text || '',
         cta_secondary_btn_url: setting?.cta_secondary_btn_url || '',
+        // Hero Bullets
+        hero_feature_1: setting?.hero_feature_1 || '',
+        hero_feature_2: setting?.hero_feature_2 || '',
+        hero_feature_3: setting?.hero_feature_3 || '',
+        // Metrics
+        metric_1_label: setting?.metric_1_label || '',
+        metric_1_value: setting?.metric_1_value || '',
+        metric_2_label: setting?.metric_2_label || '',
+        metric_2_value: setting?.metric_2_value || '',
+        metric_3_label: setting?.metric_3_label || '',
+        metric_3_value: setting?.metric_3_value || '',
+        // Features
+        feature_1_title: setting?.feature_1_title || '',
+        feature_1_description: setting?.feature_1_description || '',
+        feature_2_title: setting?.feature_2_title || '',
+        feature_2_description: setting?.feature_2_description || '',
+        feature_3_title: setting?.feature_3_title || '',
+        feature_3_description: setting?.feature_3_description || '',
     });
 
     const handleSubmit: FormEventHandler = (e) => {
@@ -139,6 +175,21 @@ export default function Index({
                                 onChange={(file) => setData('hero_image', file)}
                                 error={errors.hero_image}
                             />
+
+                            <div className="grid gap-4 md:grid-cols-3 pt-4">
+                                <div className="space-y-2">
+                                    <Label>Poin Keunggulan 1</Label>
+                                    <Input value={data.hero_feature_1} onChange={(e) => setData('hero_feature_1', e.target.value)} placeholder="Kurikulum..." />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Poin Keunggulan 2</Label>
+                                    <Input value={data.hero_feature_2} onChange={(e) => setData('hero_feature_2', e.target.value)} placeholder="Karakter..." />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Poin Keunggulan 3</Label>
+                                    <Input value={data.hero_feature_3} onChange={(e) => setData('hero_feature_3', e.target.value)} placeholder="Karir..." />
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -176,9 +227,57 @@ export default function Index({
                                     placeholder="Deskripsi lengkap tentang sekolah..."
                                     rows={6}
                                 />
-                                {errors.about_description && (
+                                    {errors.about_description && (
                                     <p className="text-sm text-destructive">{errors.about_description}</p>
                                 )}
+                            </div>
+
+                            <div className="border-t pt-4">
+                                <h3 className="font-semibold mb-4">Statistik (Metrics)</h3>
+                                <div className="grid gap-4 md:grid-cols-3">
+                                    <div className="space-y-2">
+                                        <Label>Metric 1: Label</Label>
+                                        <Input value={data.metric_1_label} onChange={(e) => setData('metric_1_label', e.target.value)} placeholder="Siswa Aktif" />
+                                        <Label>Metric 1: Value</Label>
+                                        <Input value={data.metric_1_value} onChange={(e) => setData('metric_1_value', e.target.value)} placeholder="500+" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Metric 2: Label</Label>
+                                        <Input value={data.metric_2_label} onChange={(e) => setData('metric_2_label', e.target.value)} placeholder="Kelulusan" />
+                                        <Label>Metric 2: Value</Label>
+                                        <Input value={data.metric_2_value} onChange={(e) => setData('metric_2_value', e.target.value)} placeholder="95%" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Metric 3: Label</Label>
+                                        <Input value={data.metric_3_label} onChange={(e) => setData('metric_3_label', e.target.value)} placeholder="Ekstrakurikuler" />
+                                        <Label>Metric 3: Value</Label>
+                                        <Input value={data.metric_3_value} onChange={(e) => setData('metric_3_value', e.target.value)} placeholder="15+" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="border-t pt-4">
+                                <h3 className="font-semibold mb-4">Kartu Info (Features)</h3>
+                                <div className="grid gap-4 md:grid-cols-3">
+                                    <div className="space-y-2">
+                                        <Label>Kartu 1: Judul</Label>
+                                        <Input value={data.feature_1_title} onChange={(e) => setData('feature_1_title', e.target.value)} placeholder="Judul..." />
+                                        <Label>Kartu 1: Deskripsi</Label>
+                                        <Textarea value={data.feature_1_description} onChange={(e) => setData('feature_1_description', e.target.value)} placeholder="Deskripsi..." />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Kartu 2: Judul</Label>
+                                        <Input value={data.feature_2_title} onChange={(e) => setData('feature_2_title', e.target.value)} placeholder="Judul..." />
+                                        <Label>Kartu 2: Deskripsi</Label>
+                                        <Textarea value={data.feature_2_description} onChange={(e) => setData('feature_2_description', e.target.value)} placeholder="Deskripsi..." />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Kartu 3: Judul</Label>
+                                        <Input value={data.feature_3_title} onChange={(e) => setData('feature_3_title', e.target.value)} placeholder="Judul..." />
+                                        <Label>Kartu 3: Deskripsi</Label>
+                                        <Textarea value={data.feature_3_description} onChange={(e) => setData('feature_3_description', e.target.value)} placeholder="Deskripsi..." />
+                                    </div>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

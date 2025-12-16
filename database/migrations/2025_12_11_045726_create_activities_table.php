@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('activities', function (Blueprint $table) {
-            $table->id();
+            $table->uuid("id")->primary();
             $table->enum('type', ['school', 'extracurricular', 'achievement']);
             $table->string('title');
             $table->string('slug')->unique();

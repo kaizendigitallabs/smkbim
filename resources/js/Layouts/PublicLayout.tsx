@@ -3,15 +3,17 @@ import { GraduationCap, Menu, X, Facebook, Instagram, Youtube, Search, ArrowRigh
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/mode-toggle';
+import { PageProps } from '@/types';
 
 interface Props {
     children: React.ReactNode;
 }
 
 export default function PublicLayout({ children }: Props) {
-    const { props } = usePage();
-    const schoolProfile = props.schoolProfile as any;
-    const siteSetting = props.siteSetting as any;
+    const { props } = usePage<PageProps>();
+    const schoolProfile = (props as any).schoolProfile;
+    const siteSetting = (props as any).siteSetting;
+    const ppdbSetting = (props as any).ppdbSetting; // Retrieve ppdbSetting
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
@@ -67,8 +69,14 @@ export default function PublicLayout({ children }: Props) {
                             {/* Actions */}
                             <div className="flex items-center gap-4">
                                 <Link href="/ppdb">
-                                    <Button className="rounded-full bg-primary hover:bg-primary/90 text-white px-6 shadow-sm shadow-primary/30">
-                                        PPDB
+                                    <Button 
+                                        className={`rounded-full px-6 shadow-sm transition-all ${
+                                            ppdbSetting?.is_open 
+                                            ? 'bg-primary hover:bg-primary/90 text-white shadow-primary/30' 
+                                            : 'bg-slate-100 hover:bg-slate-200 text-slate-500 shadow-none dark:bg-slate-800 dark:text-slate-400'
+                                        }`}
+                                    >
+                                        {ppdbSetting?.is_open ? 'PPDB' : 'PPDB Ditutup'}
                                     </Button>
                                 </Link>
                                 {props.auth?.user ? (
@@ -137,7 +145,15 @@ export default function PublicLayout({ children }: Props) {
                                 </div>
                                 <div className="space-y-3">
                                     <Link href="/ppdb" className="block w-full">
-                                        <Button className="w-full bg-primary text-white shadow-sm">PPDB</Button>
+                                        <Button 
+                                            className={`w-full shadow-sm ${
+                                                ppdbSetting?.is_open 
+                                                ? 'bg-primary text-white' 
+                                                : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                                            }`}
+                                        >
+                                            {ppdbSetting?.is_open ? 'PPDB' : 'PPDB Ditutup'}
+                                        </Button>
                                     </Link>
                                     {props.auth?.user ? (
                                         <Link href={route('dashboard')} className="block w-full">

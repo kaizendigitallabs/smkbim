@@ -7,10 +7,29 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ImageUpload } from '@/components/image-upload';
-import { FormEventHandler } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
+import { ArrowLeft, Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
 interface Major {
+    id: number;
+    name: string;
+}
+
+interface Student {
     id: number;
     name: string;
 }
@@ -24,8 +43,9 @@ interface StudentProject {
     image?: string;
 }
 
-export default function Form({ project, majors }: { project?: StudentProject; majors: Major[] }) {
+export default function Form({ project, majors, students }: { project?: StudentProject; majors: Major[]; students: Student[] }) {
     const isEdit = !!project;
+    const [open, setOpen] = useState(false)
     
     const { data, setData, post, processing, errors } = useForm({
         major_id: project?.major_id || (majors[0]?.id || 0),
@@ -86,14 +106,51 @@ export default function Form({ project, majors }: { project?: StudentProject; ma
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid gap-4 md:grid-cols-2">
-                                <div className="space-y-2">
+                                <div className="space-y-2 flex flex-col">
                                     <Label htmlFor="student_name">Nama Siswa *</Label>
-                                    <Input
-                                        id="student_name"
-                                        value={data.student_name}
-                                        onChange={(e) => setData('student_name', e.target.value)}
-                                        placeholder="Nama siswa"
-                                    />
+                                    <Popover open={open} onOpenChange={setOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                aria-expanded={open}
+                                                className="w-full justify-between"
+                                            >
+                                                {data.student_name
+                                                    ? students.find((student) => student.name === data.student_name)?.name || data.student_name
+                                                    : "Pilih siswa..."}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Cari siswa..." />
+                                                <CommandList>
+                                                    <CommandEmpty>Siswa tidak ditemukan.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {students.map((student) => (
+                                                            <CommandItem
+                                                                key={student.id}
+                                                                value={student.name}
+                                                                onSelect={(currentValue) => {
+                                                                    setData('student_name', currentValue === data.student_name ? "" : currentValue)
+                                                                    setOpen(false)
+                                                                }}
+                                                            >
+                                                                <Check
+                                                                    className={cn(
+                                                                        "mr-2 h-4 w-4",
+                                                                        data.student_name === student.name ? "opacity-100" : "opacity-0"
+                                                                    )}
+                                                                />
+                                                                {student.name}
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
                                     {errors.student_name && (
                                         <p className="text-sm text-destructive">{errors.student_name}</p>
                                     )}

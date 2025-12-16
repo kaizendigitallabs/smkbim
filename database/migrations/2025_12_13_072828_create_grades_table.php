@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('grades', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->foreignId('subject_teacher_assignment_id')->constrained()->onDelete('cascade');
+            $table->uuid("id")->primary();
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('subject_teacher_assignment_id')->constrained()->onDelete('cascade');
             $table->enum('type', ['daily', 'daily_exam', 'midterm', 'final']); // harian, ujian_harian, UTS, UAS
             $table->decimal('score', 5, 2); // Nilai 0-100
             $table->string('description')->nullable(); // Keterangan (untuk daily/daily_exam)

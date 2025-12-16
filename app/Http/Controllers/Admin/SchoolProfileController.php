@@ -58,6 +58,9 @@ class SchoolProfileController extends Controller
             'facebook' => 'nullable|url|max:255',
             'instagram' => 'nullable|url|max:255',
             'youtube' => 'nullable|url|max:255',
+            'accreditation_grade' => 'nullable|string',
+            'accreditation_label' => 'nullable|string',
+
         ]);
 
         $profile = \App\Models\SchoolProfile::first();

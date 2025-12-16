@@ -26,6 +26,8 @@ interface SchoolProfile {
     facebook?: string;
     instagram?: string;
     youtube?: string;
+    accreditation_grade?: string;
+    accreditation_label?: string;
 }
 
 export default function Index({ profile }: { profile?: SchoolProfile }) {
@@ -45,6 +47,8 @@ export default function Index({ profile }: { profile?: SchoolProfile }) {
         facebook: profile?.facebook || '',
         instagram: profile?.instagram || '',
         youtube: profile?.youtube || '',
+        accreditation_grade: profile?.accreditation_grade || '',
+        accreditation_label: profile?.accreditation_label || '',
     });
 
     const handleSubmit: FormEventHandler = (e) => {
@@ -109,24 +113,54 @@ export default function Index({ profile }: { profile?: SchoolProfile }) {
                                         placeholder="Deskripsi singkat tentang sekolah..."
                                         rows={3}
                                     />
-                                    {errors.description && (
-                                        <p className="text-sm text-destructive">{errors.description}</p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2 md:col-span-2">
-                                    <ImageUpload
-                                        label="Logo Sekolah"
-                                        value={profile?.logo}
-                                        onChange={(file) => setData('logo', file)}
-                                        error={errors.logo}
-                                    />
-                                </div>
+                                {errors.description && (
+                                    <p className="text-sm text-destructive">{errors.description}</p>
+                                )}
                             </div>
-                        </CardContent>
-                    </Card>
 
-                    {/* Vision & Mission */}
+                            <div className="space-y-2 md:col-span-2">
+                                <ImageUpload
+                                    label="Logo Sekolah"
+                                    value={profile?.logo}
+                                    onChange={(file) => setData('logo', file)}
+                                    error={errors.logo}
+                                />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Accreditation */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Akreditasi</CardTitle>
+                        <CardDescription>
+                            Status akreditasi sekolah
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="accreditation_grade">Nilai (Grade)</Label>
+                            <Input
+                                id="accreditation_grade"
+                                value={data.accreditation_grade || ''}
+                                onChange={(e) => setData('accreditation_grade', e.target.value)}
+                                placeholder="A"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="accreditation_label">Label</Label>
+                            <Input
+                                id="accreditation_label"
+                                value={data.accreditation_label || ''}
+                                onChange={(e) => setData('accreditation_label', e.target.value)}
+                                placeholder="Unggul"
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Vision & Mission */}
                     <Card>
                         <CardHeader>
                             <CardTitle>Visi & Misi</CardTitle>

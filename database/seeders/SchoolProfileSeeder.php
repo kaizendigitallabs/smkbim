@@ -12,7 +12,7 @@ class SchoolProfileSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\SchoolProfile::create([
+        \App\Models\SchoolProfile::firstOrCreate([], [
             'name' => 'SMK Bina Insan Mulia',
             'description' => 'SMK Bina Insan Mulia adalah sekolah menengah kejuruan yang berfokus pada pengembangan kompetensi siswa di bidang teknologi dan industri.',
             'vision' => 'Menjadi lembaga pendidikan kejuruan yang unggul, berkarakter, dan berdaya saing global.',
@@ -23,6 +23,8 @@ class SchoolProfileSeeder extends Seeder
             'email' => 'info@smkbima.sch.id',
             'whatsapp' => '6281234567890',
             'operating_hours' => 'Senin - Jumat: 07:00 - 16:00',
+            'accreditation_grade' => 'A',
+            'accreditation_label' => 'Unggul',
         ]);
     }
 }
